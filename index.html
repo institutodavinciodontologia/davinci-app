@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Instituto Da Vinci</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{--bg:#0A0A0A;--card:#131311;--card2:#1C1B18;--gold:#C9A84C;--gold-l:#E8D08A;--dim:rgba(201,168,76,.28);
+--text:#F5F1E6;--muted:#9B9484;--ok:#7FBF7F;--warn:#E0B152;--bad:#E06052}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;padding-bottom:88px}
+.serif{font-family:'Cormorant Garamond',serif}
+header{position:sticky;top:0;z-index:20;background:rgba(0,0,0,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--dim);
+ padding:12px 18px;padding-top:calc(12px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px}
+.brand svg{width:38px;height:38px}
+.b1{font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.02;
+ background:linear-gradient(180deg,#F3E3A8,#D9BC6B 45%,#B8933A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.b2{font-family:'Cormorant Garamond',serif;font-size:8.5px;letter-spacing:.44em;color:#D9BC6B;margin-top:2px}
+.avatar{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);background:var(--card);
+ display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer}
+main{padding:20px 18px 10px;max-width:520px;margin:0 auto}
+.screen{display:none}.screen.on{display:block}
+h1.title{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:500;margin-bottom:4px}
+h1.title em{font-style:normal;color:var(--gold-l)}
+.sub{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.tile{background:var(--card);border:1px solid var(--dim);border-radius:17px;padding:18px 15px;display:flex;flex-direction:column;gap:10px;
+ min-height:118px;color:var(--text);text-decoration:none;transition:transform .12s;cursor:pointer}
+.tile:active{transform:scale(.97);border-color:var(--gold)}
+.tile.wide{grid-column:1/-1;flex-direction:row;align-items:center;min-height:0;padding:14px}
+.icon{width:42px;height:42px;border-radius:12px;background:rgba(201,168,76,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tname{font-size:14.5px;font-weight:600;line-height:1.25}
+.tdesc{font-size:11px;color:var(--muted);line-height:1.35;margin-top:-4px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(0,0,0,.95);backdrop-filter:blur(12px);border-top:1px solid var(--dim);
+ display:flex;justify-content:space-around;padding:9px 6px calc(9px + env(safe-area-inset-bottom))}
+nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);
+ font-size:10px;font-weight:500;min-width:62px;padding:4px 0;font-family:inherit;cursor:pointer}
+nav button svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.active{color:var(--gold)}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:13px;font-weight:500;background:none;border:none;
+ font-family:inherit;margin-bottom:14px;cursor:pointer;padding:4px 0}
+input,select,textarea{width:100%;background:var(--card);border:1px solid var(--dim);border-radius:13px;color:var(--text);
+ font-family:inherit;font-size:15px;padding:14px 15px;outline:none;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+textarea{min-height:90px;resize:vertical}
+label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-weight:500}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:14px;border:none;
+ background:linear-gradient(135deg,#D9BC6B,#B8933A);color:#141005;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:18px}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:var(--card);color:var(--gold);border:1px solid var(--dim)}
+.btn:disabled{opacity:.5}
+.card{background:var(--card);border:1px solid var(--dim);border-radius:15px;padding:14px 15px;margin-bottom:11px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chip{font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:99px;background:rgba(201,168,76,.14);color:var(--gold-l);white-space:nowrap}
+.chip.ok{background:rgba(127,191,127,.15);color:var(--ok)} .chip.warn{background:rgba(224,177,82,.15);color:var(--warn)}
+.chip.bad{background:rgba(224,96,82,.15);color:var(--bad)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.muted{color:var(--muted);font-size:12px}
+.seg{display:flex;gap:8px;margin-top:6px}
+.seg button{flex:1;padding:11px 4px;border-radius:12px;border:1px solid var(--dim);background:var(--card);color:var(--muted);
+ font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}
+.seg button.sel{background:rgba(201,168,76,.15);color:var(--gold-l);border-color:var(--gold)}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px;border-radius:12px;border:1px solid var(--dim);background:var(--card);color:var(--muted);
+ font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer}
+.tabs button.sel{color:var(--gold-l);border-color:var(--gold);background:rgba(201,168,76,.12)}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.thumbs a{display:block;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--card2);border:1px solid var(--dim);position:relative}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs .fname{position:absolute;bottom:0;left:0;right:0;font-size:8.5px;padding:3px 5px;background:rgba(0,0,0,.75);color:var(--text);
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#221F16;color:var(--gold-l);border:1px solid var(--gold);
+ padding:12px 22px;border-radius:99px;font-size:13.5px;font-weight:500;z-index:50;opacity:0;transition:opacity .25s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.show{opacity:1}
+.spin{border:3px solid var(--dim);border-top-color:var(--gold);border-radius:50%;width:30px;height:30px;margin:30px auto;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#login{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:30px}
+#sigpad{width:100%;height:180px;background:#FBF8EF;border-radius:13px;touch-action:none;display:block}
+.wa{display:inline-flex;align-items:center;gap:5px;color:var(--ok);font-size:12px;font-weight:600;text-decoration:none;padding:6px 10px;
+ border:1px solid rgba(127,191,127,.3);border-radius:99px}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <svg width="90" height="90" viewBox="0 0 100 100"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+   <stop offset="0" stop-color="#F3E3A8"/><stop offset=".45" stop-color="#D9BC6B"/><stop offset="1" stop-color="#A8842F"/></linearGradient></defs>
+   <path fill="url(#lg)" fill-rule="evenodd" d="M2 2h96v96H2z M50 3.5a46.5 46.5 0 1 0 0 93 46.5 46.5 0 0 0 0-93z"/></svg>
+  <div class="serif" style="font-size:34px;text-align:center;line-height:1.05;margin-top:14px;background:linear-gradient(180deg,#F3E3A8,#D9BC6B 45%,#B8933A);-webkit-background-clip:text;background-clip:text;color:transparent">Instituto<br>Da Vinci</div>
+  <div class="serif" style="font-size:12px;letter-spacing:.44em;color:#D9BC6B;margin-bottom:34px">ODONTOLOGÍA</div>
+  <div id="gbtn"></div>
+  <p class="muted" style="margin-top:18px;text-align:center">Ingresá con la cuenta autorizada del instituto</p>
+</div>
+
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 100 100"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+     <stop offset="0" stop-color="#F3E3A8"/><stop offset=".45" stop-color="#D9BC6B"/><stop offset="1" stop-color="#A8842F"/></linearGradient></defs>
+     <path fill="url(#hg)" fill-rule="evenodd" d="M2 2h96v96H2z M50 3.5a46.5 46.5 0 1 0 0 93 46.5 46.5 0 0 0 0-93z"/></svg>
+    <div><div class="b1">Instituto<br>Da Vinci</div><div class="b2">ODONTOLOGÍA</div></div>
+  </div>
+  <div class="avatar" id="avatar" onclick="logout()" title="Cerrar sesión">·</div>
+</header>
+
+<main>
+<!-- HOME -->
+<section class="screen" id="s-home">
+  <h1 class="title">Hola, <em id="uname">—</em></h1>
+  <p class="sub" id="udate"></p>
+  <div class="grid">
+    <div class="tile" onclick="go('buscar')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></div><div class="tname">Buscar paciente</div><div class="tdesc">Fotos, RX, historia y consentimientos</div></div>
+    <div class="tile" onclick="go('seg')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><div class="tname">Ficha de seguimiento</div><div class="tdesc">Ver y completar seguimientos</div></div>
+    <div class="tile" onclick="go('kaizen')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4M12 16.8v.2"/></svg></div><div class="tname">Kaizen</div><div class="tdesc">Reportar problemas o mejoras</div></div>
+    <div class="tile" onclick="go('deriv')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 7h11M11 3.5 15 7l-4 3.5M20 17H9M13 13.5 9 17l4 3.5"/></svg></div><div class="tname">Derivaciones</div><div class="tdesc">Pendientes y completadas</div></div>
+    <div class="tile" onclick="go('hc')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l4 4v13H6z"/><path d="M14.5 3.5V8H19M9.5 13h5M12 10.5v5"/></svg></div><div class="tname">Historia clínica</div><div class="tdesc">Completar o actualizar HC</div></div>
+    <div class="tile" onclick="go('consent')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6z"/><path d="M9 8h6M9 11.5h6M9 17c.8-1.4 2-1.4 2.6 0 .6 1.2 1.6 1.2 2.4-.5"/></svg></div><div class="tname">Consentimiento</div><div class="tdesc">Firma en el celular → PDF</div></div>
+    <div class="tile" onclick="go('ateneo')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M2.5 19c.6-3 2.6-4.5 5-4.5M21.5 19c-.6-3-2.6-4.5-5-4.5M7.5 20c.5-3.5 2.4-5 4.5-5s4 1.5 4.5 5"/></svg></div><div class="tname">Ateneo</div><div class="tdesc">Casos para presentar</div></div>
+    <div class="tile" onclick="go('fin')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></div><div class="tname">Cierre profesional</div><div class="tdesc">Tu liquidación del período</div></div>
+    <div class="tile" onclick="go('insumos')"><div class="icon"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div><div class="tname">Insumos</div><div class="tdesc">Pedir materiales y ver stock</div></div>
+    <a class="tile wide" href="https://www.tuturno.io/" target="_blank" rel="noopener"><div class="icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div><div style="margin-left:12px"><div class="tname">Turnos · TuTurno</div><div class="tdesc">Abrir la agenda del instituto</div></div></a>
+  </div>
+</section>
+
+<!-- BUSCAR PACIENTE -->
+<section class="screen" id="s-buscar">
+  <h1 class="title">Buscar paciente</h1>
+  <p class="sub">Nombre, apellido o DNI</p>
+  <input id="q" placeholder="Ej: García o 32456789" oninput="debounceSearch()" autocomplete="off">
+  <div id="results" style="margin-top:16px"></div>
+</section>
+
+<!-- FICHA PACIENTE (DRIVE) -->
+<section class="screen" id="s-pac">
+  <button class="back" onclick="go('buscar')">‹ Volver</button>
+  <div id="pacBody"><div class="spin"></div></div>
+</section>
+
+<!-- SEGUIMIENTO -->
+<section class="screen" id="s-seg">
+  <h1 class="title">Seguimiento</h1>
+  <p class="sub">Fichas de seguimiento de pacientes</p>
+  <input id="segQ" placeholder="Filtrar por nombre o DNI" oninput="debounceSeg()" autocomplete="off">
+  <div id="segList" style="margin-top:16px"><div class="spin"></div></div>
+</section>
+<section class="screen" id="s-segdet">
+  <button class="back" onclick="go('seg')">‹ Volver</button>
+  <div id="segDet"><div class="spin"></div></div>
+</section>
+
+<!-- KAIZEN -->
+<section class="screen" id="s-kaizen">
+  <h1 class="title">Kaizen</h1>
+  <p class="sub">Reportá algo roto, faltante o mejorable</p>
+  <div class="tabs"><button class="sel" id="kt0" onclick="kaizenTab(0)">Nuevo reporte</button><button id="kt1" onclick="kaizenTab(1)">Ver reportes</button></div>
+  <div id="kForm">
+    <label>Área o lugar</label>
+    <select id="kArea"><option>Consultorio 1</option><option>Consultorio 2</option><option>Consultorio 3</option><option>Recepción</option><option>Esterilización</option><option>Baño</option><option>Otro</option></select>
+    <label>Categoría</label>
+    <select id="kCat"><option>Equipamiento</option><option>Insumos</option><option>Limpieza</option><option>Infraestructura</option><option>Proceso</option><option>Otro</option></select>
+    <label>Descripción del problema</label>
+    <textarea id="kDesc" placeholder="¿Qué pasa? ¿Desde cuándo?"></textarea>
+    <label>Urgencia</label>
+    <div class="seg" id="kUrg">
+      <button onclick="segSel(this)" data-v="Puede esperar" class="sel">Puede esperar</button>
+      <button onclick="segSel(this)" data-v="Urgente">Urgente</button>
+      <button onclick="segSel(this)" data-v="Crítico">Crítico</button>
+    </div>
+    <label>Foto (opcional)</label>
+    <input type="file" id="kFoto" accept="image/*" capture="environment">
+    <button class="btn" onclick="kaizenSend(this)">Enviar reporte</button>
+  </div>
+  <div id="kList" style="display:none"></div>
+</section>
+
+<!-- DERIVACIONES -->
+<section class="screen" id="s-deriv">
+  <h1 class="title">Derivaciones</h1>
+  <div class="tabs"><button class="sel" id="dt0" onclick="derivTab('PENDIENTE')">Pendientes</button><button id="dt1" onclick="derivTab('COMPLETADA')">Completadas</button><button id="dt2" onclick="derivTab('NUEVA')">+ Nueva</button></div>
+  <div id="dList"><div class="spin"></div></div>
+  <div id="dForm" style="display:none">
+    <label>Paciente</label><input id="dPac" placeholder="Apellido y nombre">
+    <label>Deriva (profesional)</label><input id="dDe" placeholder="¿Quién deriva?">
+    <label>Destino (profesional)</label><input id="dA" placeholder="¿A quién?">
+    <label>Especialidad</label><input id="dEsp" placeholder="Ej: Endodoncia">
+    <label>Motivo</label><textarea id="dMot" placeholder="Motivo de la derivación"></textarea>
+    <label>Urgencia</label>
+    <div class="seg" id="dUrg">
+      <button onclick="segSel(this)" data-v="Sin urgencia" class="sel">Sin urgencia</button>
+      <button onclick="segSel(this)" data-v="Dentro del mes">Dentro del mes</button>
+      <button onclick="segSel(this)" data-v="Urgente">Urgente</button>
+    </div>
+    <button class="btn" onclick="derivSend(this)">Crear derivación</button>
+  </div>
+</section>
+
+<!-- HISTORIA CLÍNICA -->
+<section class="screen" id="s-hc">
+  <h1 class="title">Historia clínica</h1>
+  <p class="sub">Se guarda como documento en la carpeta del paciente</p>
+  <label>Paciente</label>
+  <input id="hcQ" placeholder="Buscar paciente..." oninput="pickSearch('hc')" autocomplete="off">
+  <div id="hcPick"></div>
+  <div id="hcSel" class="muted" style="margin-top:6px"></div>
+  <label>Datos personales</label><textarea id="hcDatos" placeholder="Edad, ocupación, contacto..."></textarea>
+  <label>Antecedentes médicos relevantes</label><textarea id="hcAnt"></textarea>
+  <label>Alergias</label><input id="hcAle" placeholder="Ej: penicilina / ninguna conocida">
+  <label>Medicación actual</label><input id="hcMed">
+  <label>Motivo de consulta</label><textarea id="hcMot"></textarea>
+  <label>Diagnóstico</label><textarea id="hcDx"></textarea>
+  <label>Plan de tratamiento</label><textarea id="hcPlan"></textarea>
+  <button class="btn" onclick="hcSend(this)">Guardar historia clínica</button>
+</section>
+
+<!-- CONSENTIMIENTO -->
+<section class="screen" id="s-consent">
+  <h1 class="title">Consentimiento</h1>
+  <p class="sub">El paciente firma acá y se guarda el PDF en su carpeta</p>
+  <label>Paciente</label>
+  <input id="coQ" placeholder="Buscar paciente..." oninput="pickSearch('co')" autocomplete="off">
+  <div id="coPick"></div>
+  <div id="coSel" class="muted" style="margin-top:6px"></div>
+  <label>Tipo de consentimiento</label>
+  <select id="coTipo"><option>Tratamiento odontológico general</option><option>Cirugía / Extracción</option><option>Endodoncia</option><option>Implante</option><option>Ortodoncia</option><option>Anestesia</option><option>Otro</option></select>
+  <label>Texto adicional (opcional)</label><textarea id="coTexto" placeholder="Riesgos explicados, indicaciones..."></textarea>
+  <label>Firma del paciente</label>
+  <canvas id="sigpad"></canvas>
+  <button class="btn ghost" style="margin-top:8px" onclick="sigClear()">Borrar firma</button>
+  <label>Aclaración</label><input id="coAcl" placeholder="Nombre y apellido del paciente">
+  <label>DNI</label><input id="coDni" inputmode="numeric">
+  <button class="btn" onclick="consentSend(this)">Guardar consentimiento firmado</button>
+</section>
+
+<!-- INSUMOS -->
+<section class="screen" id="s-insumos">
+  <h1 class="title">Insumos</h1>
+  <p class="sub">Los pedidos se hacen por el formulario</p>
+  <button class="btn" style="margin-top:0" onclick="openInsumos()">Pedir insumos</button>
+  <label style="margin-top:22px">Stock del instituto</label>
+  <div id="insList"><div class="spin"></div></div>
+</section>
+
+<!-- CIERRE PROFESIONAL -->
+<section class="screen" id="s-fin">
+  <h1 class="title">Cierre profesional</h1>
+  <p class="sub">Liquidación del período</p>
+  <div id="finBody"><div class="spin"></div></div>
+  <div id="finForm" style="display:none">
+    <div class="card" style="margin-top:20px;border-color:var(--gold)">
+      <div style="font-weight:600;font-size:14px;margin-bottom:4px">Cargar movimiento</div>
+      <div class="muted">Se guarda en MOVIMIENTOS_APP para validar después</div>
+      <label>Fecha</label><input id="fmFecha" type="date">
+      <label>Paciente</label><input id="fmPac" placeholder="Apellido y nombre (o vacío si no aplica)">
+      <label>Concepto</label><input id="fmCon" placeholder="Ej: Pago cuota 3, seña, etc.">
+      <label>Tipo</label>
+      <select id="fmTipo"><option>Pago paciente</option><option>Cobro directo</option><option>Gasto</option><option>Ajuste</option><option>Otro</option></select>
+      <label>Profesional</label><input id="fmProf" placeholder="Profesional asociado">
+      <label>Medio</label>
+      <select id="fmMedio"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Otro</option></select>
+      <label>Importe ($)</label><input id="fmImp" inputmode="numeric" placeholder="0">
+      <button class="btn" onclick="finMovSend(this)">Guardar movimiento</button>
+    </div>
+  </div>
+</section>
+
+<!-- ATENEO -->
+<section class="screen" id="s-ateneo">
+  <h1 class="title">Ateneo</h1>
+  <div class="tabs"><button class="sel" id="at0" onclick="ateneoTab(0)">Casos</button><button id="at1" onclick="ateneoTab(1)">+ Agregar caso</button></div>
+  <div id="aList"><div class="spin"></div></div>
+  <div id="aForm" style="display:none">
+    <label>Paciente</label><input id="aPac" placeholder="Apellido y nombre">
+    <label>Presentador</label><input id="aPres" placeholder="Profesional que presenta">
+    <label>Diagnóstico resumido</label><textarea id="aDx"></textarea>
+    <label>Plan propuesto</label><textarea id="aPlan"></textarea>
+    <button class="btn" onclick="ateneoSend(this)">Agregar a ateneo</button>
+  </div>
+</section>
+</main>
+
+<nav>
+  <button id="n-home" class="active" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m4 11 8-7 8 7v8.5H4z"/><path d="M10 19.5v-5h4v5"/></svg>Inicio</button>
+  <button id="n-buscar" onclick="go('buscar')"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>Paciente</button>
+  <button id="n-kaizen" onclick="go('kaizen')"><svg viewBox="0 0 24 24"><path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4M12 16.8v.2"/></svg>Kaizen</button>
+  <button id="n-seg" onclick="go('seg')"><svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Seguimiento</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ================= CONFIGURAR ANTES DE USAR =================
+var API_URL   = 'https://script.google.com/macros/s/AKfycbzhXH9OwrV9pSwZ4zFxH4QTK2z9xYhO-pSecGGOOpytIMOXggD-j43OgGcTatYX3men/exec';
+var CLIENT_ID = '50761601811-2dsta3rf06erretg9k3labelsm43k9ml.apps.googleusercontent.com';
+var INSUMOS_URL = 'https://forms.gle/UxtA6kVr11X6FwGg7'; // Google Form de solicitud de insumos
+// ============================================================
+
+var TOKEN = sessionStorage.getItem('tk') || '';
+var USER = JSON.parse(sessionStorage.getItem('usr')||'null');
+
+function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},2800); }
+function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
+
+function api(action, payload){
+  return fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({action:action, token:TOKEN, payload:payload||{}})})
+    .then(function(r){ return r.json(); })
+    .then(function(r){ if(!r.ok) throw new Error(r.error); return r.data; });
+}
+
+// ---------- LOGIN ----------
+window.onGsiLoad = function(){};
+window.addEventListener('load', function(){
+  var iv = setInterval(function(){
+    if(!window.google || !google.accounts) return;
+    clearInterval(iv);
+    google.accounts.id.initialize({client_id: CLIENT_ID, callback: onCred});
+    google.accounts.id.renderButton(document.getElementById('gbtn'), {theme:'filled_black', size:'large', text:'signin_with', shape:'pill', locale:'es'});
+    if(TOKEN && USER) startApp();
+  }, 150);
+});
+function onCred(resp){
+  TOKEN = resp.credential;
+  sessionStorage.setItem('tk', TOKEN);
+  api('me').then(function(u){
+    USER=u; sessionStorage.setItem('usr', JSON.stringify(u)); startApp();
+  }).catch(function(e){ TOKEN=''; sessionStorage.clear(); toast(e.message); });
+}
+function startApp(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('uname').textContent = (USER.name||'').split(' ')[0];
+  document.getElementById('avatar').textContent = (USER.name||'?').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+  var d=new Date(), dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'], meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('udate').textContent = dias[d.getDay()]+' '+d.getDate()+' de '+meses[d.getMonth()]+' · ¿Qué necesitás hoy?';
+}
+function logout(){ if(confirm('¿Cerrar sesión?')){ sessionStorage.clear(); location.reload(); } }
+
+// ---------- NAV ----------
+var NAVMAP={home:'n-home',buscar:'n-buscar',kaizen:'n-kaizen',seg:'n-seg'};
+function go(s){
+  document.querySelectorAll('.screen').forEach(function(x){x.classList.remove('on');});
+  document.getElementById('s-'+s).classList.add('on');
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.remove('active');});
+  if(NAVMAP[s]) document.getElementById(NAVMAP[s]).classList.add('active');
+  window.scrollTo(0,0);
+  if(s==='seg') segLoad();
+  if(s==='deriv') derivTab('PENDIENTE');
+  if(s==='ateneo') ateneoTab(0);
+  if(s==='consent') sigInit();
+  if(s==='fin') finLoad();
+  if(s==='insumos') insumosLoad();
+}
+document.getElementById('s-home').classList.add('on');
+function openInsumos(){
+  if(INSUMOS_URL.indexOf('PEGAR')>-1){ toast('El formulario de insumos todavía no está conectado'); return; }
+  window.open(INSUMOS_URL,'_blank');
+}
+function segSel(btn){ btn.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('sel');}); btn.classList.add('sel'); }
+function segVal(id){ return document.querySelector('#'+id+' .sel').dataset.v; }
+function busy(btn,on){ btn.disabled=on; btn.dataset.t=btn.dataset.t||btn.textContent; btn.textContent=on?'Guardando…':btn.dataset.t; }
+
+// ---------- BUSCAR PACIENTE ----------
+var qT;
+function debounceSearch(){ clearTimeout(qT); qT=setTimeout(doSearch,400); }
+function doSearch(){
+  var q=document.getElementById('q').value.trim();
+  var box=document.getElementById('results');
+  if(q.length<2){ box.innerHTML=''; return; }
+  box.innerHTML='<div class="spin"></div>';
+  api('buscar',{q:q}).then(function(list){
+    if(!list.length){ box.innerHTML='<p class="muted">Sin resultados para "'+esc(q)+'"</p>'; return; }
+    box.innerHTML=list.map(function(p){
+      return '<div class="card row" onclick="openPatient(\''+p.id+'\')" style="cursor:pointer">'
+        +'<div style="font-size:14.5px;font-weight:600">'+esc(p.name)+'</div>'
+        +'<span style="color:var(--gold)">›</span></div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML=''; toast(e.message); });
+}
+function openPatient(id){
+  go('pac');
+  var box=document.getElementById('pacBody');
+  box.innerHTML='<div class="spin"></div>';
+  api('paciente',{folderId:id}).then(function(p){
+    var h='<h1 class="title" style="font-size:23px">'+esc(p.name)+'</h1>'
+      +'<a class="muted" href="'+p.url+'" target="_blank" style="text-decoration:none">Abrir carpeta en Drive ↗</a>';
+    p.sections.forEach(function(s){
+      h+='<div class="card" style="margin-top:14px"><div class="row"><div style="font-weight:600;font-size:14px">'+s.label
+        +' <span class="muted">('+s.files.length+')</span></div>'
+        +'<button class="chip" style="border:none;cursor:pointer" onclick="upl(\''+s.folderId+'\',\''+id+'\')">+ Subir</button></div>';
+      if(s.files.length){
+        h+='<div class="thumbs">'+s.files.slice(0,9).map(function(f){
+          var isImg=/^image/.test(f.mime);
+          return '<a href="'+f.url+'" target="_blank">'+(isImg?'<img loading="lazy" src="'+f.thumb+'" alt="">':'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--gold);font-size:11px;padding:6px;text-align:center;word-break:break-word">'+esc(f.name.slice(0,28))+'</div>')
+            +'<div class="fname">'+esc(f.name)+'</div></a>';
+        }).join('')+'</div>';
+        if(s.files.length>9) h+='<a class="muted" style="display:block;margin-top:8px;text-decoration:none" href="'+s.url+'" target="_blank">Ver todos ('+s.files.length+') ↗</a>';
+      } else h+='<p class="muted" style="margin-top:8px">Sin archivos todavía</p>';
+      h+='</div>';
+    });
+    box.innerHTML=h;
+  }).catch(function(e){ box.innerHTML='<p class="muted">'+esc(e.message)+'</p>'; });
+}
+function upl(folderId, patientId){
+  var inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*,application/pdf';
+  inp.onchange=function(){
+    var f=inp.files[0]; if(!f) return;
+    toast('Subiendo '+f.name+'…');
+    var rd=new FileReader();
+    rd.onload=function(){
+      var b64=rd.result.split(',')[1];
+      api('subir',{folderId:folderId,name:f.name,mime:f.type,data:b64})
+        .then(function(){ toast('Archivo subido ✓'); openPatient(patientId); })
+        .catch(function(e){ toast(e.message); });
+    };
+    rd.readAsDataURL(f);
+  };
+  inp.click();
+}
+
+// ---------- SEGUIMIENTO ----------
+var segT, segCache=null;
+function debounceSeg(){ clearTimeout(segT); segT=setTimeout(segLoad,400); }
+function semColor(s){ s=String(s).toLowerCase(); if(s.indexOf('verde')>-1)return'var(--ok)'; if(s.indexOf('amar')>-1)return'var(--warn)'; if(s.indexOf('rojo')>-1)return'var(--bad)'; return'var(--muted)'; }
+function segLoad(){
+  var q=document.getElementById('segQ').value.trim();
+  var box=document.getElementById('segList');
+  box.innerHTML='<div class="spin"></div>';
+  api('segList',{q:q}).then(function(list){
+    if(!list.length){ box.innerHTML='<p class="muted">Sin fichas</p>'; return; }
+    box.innerHTML=list.map(function(p){
+      var wa = p.tel ? '<a class="wa" href="https://wa.me/'+String(p.tel).replace(/\D/g,'')+'" target="_blank" onclick="event.stopPropagation()">WhatsApp</a>' : '';
+      var doc = (String(p.docCompleta).toLowerCase().indexOf('s')===0)?'<span class="chip ok">Doc ✓</span>':'<span class="chip warn">Doc incompleta</span>';
+      return '<div class="card" onclick="segOpen('+p.row+')" style="cursor:pointer">'
+        +'<div class="row"><div style="font-weight:600;font-size:14.5px"><span class="dot" style="background:'+semColor(p.semaforo)+'"></span>'+esc(p.nombre)+'</div>'
+        +'<span class="chip">'+esc(p.kanban||'—')+'</span></div>'
+        +'<div class="muted" style="margin-top:7px">Últ. atención: '+esc(p.ultAt||'—')+' · Resp: '+esc(p.resp||'—')+'</div>'
+        +(p.proxPaso?'<div class="muted" style="margin-top:3px">Próximo: '+esc(p.proxPaso)+'</div>':'')
+        +'<div class="row" style="margin-top:9px">'+doc+wa+'</div></div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML=''; toast(e.message); });
+}
+function segOpen(row){
+  go('segdet');
+  var box=document.getElementById('segDet');
+  box.innerHTML='<div class="spin"></div>';
+  api('segGet',{row:row}).then(function(d){
+    var h='';
+    d.fields.forEach(function(f){
+      if(f.editable){
+        h+='<label>'+esc(f.col)+'</label><textarea style="min-height:52px" data-col="'+esc(f.col)+'" class="segEdit">'+esc(f.value)+'</textarea>';
+      } else if(f.value){
+        h+='<div class="card" style="padding:10px 14px"><div class="muted" style="font-size:10.5px">'+esc(f.col)+'</div><div style="font-size:13.5px;margin-top:2px">'
+          +(/^http/.test(f.value)?'<a href="'+esc(f.value)+'" target="_blank" style="color:var(--gold)">Abrir ↗</a>':esc(f.value))+'</div></div>';
+      }
+    });
+    h+='<button class="btn" onclick="segSaveBtn(this,'+row+')">Guardar cambios</button>';
+    box.innerHTML=h;
+  }).catch(function(e){ box.innerHTML='<p class="muted">'+esc(e.message)+'</p>'; });
+}
+function segSaveBtn(btn,row){
+  var fields={};
+  document.querySelectorAll('.segEdit').forEach(function(t){ fields[t.dataset.col]=t.value; });
+  busy(btn,true);
+  api('segSave',{row:row,fields:fields}).then(function(){ busy(btn,false); toast('Guardado ✓'); go('seg'); })
+    .catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// ---------- KAIZEN ----------
+function kaizenTab(i){
+  document.getElementById('kt0').classList.toggle('sel',i===0);
+  document.getElementById('kt1').classList.toggle('sel',i===1);
+  document.getElementById('kForm').style.display=i===0?'block':'none';
+  document.getElementById('kList').style.display=i===1?'block':'none';
+  if(i===1) kaizenLoad();
+}
+function kaizenSend(btn){
+  var desc=document.getElementById('kDesc').value.trim();
+  if(!desc){ toast('Contá qué pasa en la descripción'); return; }
+  var send=function(foto,mime){
+    busy(btn,true);
+    api('kaizenAdd',{area:document.getElementById('kArea').value,categoria:document.getElementById('kCat').value,
+      descripcion:desc,urgencia:segVal('kUrg'),foto:foto,fotoMime:mime})
+      .then(function(){ busy(btn,false); toast('Reporte enviado ✓ Gracias'); document.getElementById('kDesc').value=''; document.getElementById('kFoto').value=''; })
+      .catch(function(e){ busy(btn,false); toast(e.message); });
+  };
+  var f=document.getElementById('kFoto').files[0];
+  if(f){ var rd=new FileReader(); rd.onload=function(){ send(rd.result.split(',')[1], f.type); }; rd.readAsDataURL(f); }
+  else send(null,null);
+}
+function kaizenLoad(){
+  var box=document.getElementById('kList');
+  box.innerHTML='<div class="spin"></div>';
+  api('kaizenList').then(function(list){
+    if(!list.length){ box.innerHTML='<p class="muted">Sin reportes todavía</p>'; return; }
+    box.innerHTML=list.map(function(k){
+      var cls=k.estado==='resuelto'?'ok':(k.estado==='en proceso'?'warn':'bad');
+      return '<div class="card"><div class="row"><div style="font-weight:600;font-size:13.5px">'+esc(k.area)+' · '+esc(k.cat)+'</div>'
+        +'<button class="chip '+cls+'" style="border:none;cursor:pointer" onclick="kaizenNext('+k.row+',\''+k.estado+'\')">'+esc(k.estado)+'</button></div>'
+        +'<div style="font-size:13px;margin-top:6px">'+esc(k.desc)+'</div>'
+        +'<div class="muted" style="margin-top:6px">'+esc(k.fecha)+' · '+esc(k.por)+' · '+esc(k.urgencia)
+        +(k.foto?' · <a href="'+k.foto+'" target="_blank" style="color:var(--gold)">Foto ↗</a>':'')+'</div></div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML=''; toast(e.message); });
+}
+function kaizenNext(row, cur){
+  var next=cur==='pendiente'?'en proceso':(cur==='en proceso'?'resuelto':'pendiente');
+  api('kaizenEstado',{row:row,estado:next}).then(kaizenLoad).catch(function(e){toast(e.message);});
+}
+
+// ---------- DERIVACIONES ----------
+var derivCache=null;
+function derivTab(mode){
+  ['dt0','dt1','dt2'].forEach(function(id){document.getElementById(id).classList.remove('sel');});
+  document.getElementById(mode==='PENDIENTE'?'dt0':mode==='COMPLETADA'?'dt1':'dt2').classList.add('sel');
+  document.getElementById('dForm').style.display=mode==='NUEVA'?'block':'none';
+  document.getElementById('dList').style.display=mode==='NUEVA'?'none':'block';
+  if(mode==='NUEVA') return;
+  var box=document.getElementById('dList');
+  box.innerHTML='<div class="spin"></div>';
+  var render=function(rows){
+    var f=rows.filter(function(r){ return mode==='PENDIENTE' ? !/complet/i.test(r.estado) : /complet/i.test(r.estado); });
+    if(!f.length){ box.innerHTML='<p class="muted">Nada por acá</p>'; return; }
+    box.innerHTML=f.map(function(r){
+      return '<div class="card"><div class="row"><div style="font-weight:600;font-size:14px">'+esc(r.paciente)+'</div>'
+        +'<span class="chip'+(/urg/i.test(r.urgencia)?' bad':'')+'">'+esc(r.urgencia||'—')+'</span></div>'
+        +'<div class="muted" style="margin-top:6px">'+esc(r.de)+' → '+esc(r.a)+(r.esp?' · '+esc(r.esp):'')+'</div>'
+        +(r.desc?'<div style="font-size:13px;margin-top:5px">'+esc(r.desc)+'</div>':'')
+        +'<div class="row" style="margin-top:9px"><span class="muted">'+esc(r.fecha)+'</span>'
+        +(mode==='PENDIENTE'?'<button class="chip ok" style="border:none;cursor:pointer" onclick="derivOk('+r.row+')">✓ Completar</button>':'')
+        +'</div></div>';
+    }).join('');
+  };
+  if(derivCache){ render(derivCache); }
+  api('derivList').then(function(d){ derivCache=d.rows; render(d.rows); }).catch(function(e){ box.innerHTML=''; toast(e.message); });
+}
+function derivOk(row){
+  api('derivDone',{row:row}).then(function(){ derivCache=null; toast('Derivación completada ✓'); derivTab('PENDIENTE'); }).catch(function(e){toast(e.message);});
+}
+function derivSend(btn){
+  var p={paciente:document.getElementById('dPac').value.trim(), de:document.getElementById('dDe').value.trim(),
+    a:document.getElementById('dA').value.trim(), especialidad:document.getElementById('dEsp').value.trim(),
+    motivo:document.getElementById('dMot').value.trim(), urgencia:segVal('dUrg')};
+  if(!p.paciente||!p.de||!p.a){ toast('Completá paciente, quién deriva y destino'); return; }
+  busy(btn,true);
+  api('derivAdd',p).then(function(){ busy(btn,false); derivCache=null; toast('Derivación creada ✓');
+    ['dPac','dDe','dA','dEsp','dMot'].forEach(function(id){document.getElementById(id).value='';});
+    derivTab('PENDIENTE');
+  }).catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// ---------- SELECTOR DE PACIENTE (HC + Consentimiento) ----------
+var pickT={}, pickSelId={};
+function pickSearch(prefix){
+  clearTimeout(pickT[prefix]);
+  pickT[prefix]=setTimeout(function(){
+    var q=document.getElementById(prefix+'Q').value.trim();
+    var box=document.getElementById(prefix+'Pick');
+    if(q.length<2){ box.innerHTML=''; return; }
+    api('buscar',{q:q}).then(function(list){
+      box.innerHTML=list.slice(0,6).map(function(p){
+        return '<div class="card" style="padding:11px 14px;cursor:pointer" onclick="pickSet(\''+prefix+'\',\''+p.id+'\',\''+esc(p.name).replace(/'/g,"\\'")+'\')">'+esc(p.name)+'</div>';
+      }).join('');
+    }).catch(function(e){toast(e.message);});
+  },400);
+}
+function pickSet(prefix,id,name){
+  pickSelId[prefix]=id;
+  document.getElementById(prefix+'Pick').innerHTML='';
+  document.getElementById(prefix+'Q').value=name;
+  document.getElementById(prefix+'Sel').textContent='✓ Seleccionado: '+name;
+  if(prefix==='co') document.getElementById('coAcl').value=name.replace(/\s*\d{6,}.*/,'');
+}
+
+// ---------- HISTORIA CLÍNICA ----------
+function hcSend(btn){
+  if(!pickSelId.hc){ toast('Primero elegí el paciente'); return; }
+  busy(btn,true);
+  api('hcSave',{folderId:pickSelId.hc,
+    datos:document.getElementById('hcDatos').value, antecedentes:document.getElementById('hcAnt').value,
+    alergias:document.getElementById('hcAle').value, medicacion:document.getElementById('hcMed').value,
+    motivo:document.getElementById('hcMot').value, diagnostico:document.getElementById('hcDx').value,
+    plan:document.getElementById('hcPlan').value})
+  .then(function(r){ busy(btn,false); toast('Historia clínica guardada ✓');
+    ['hcDatos','hcAnt','hcAle','hcMed','hcMot','hcDx','hcPlan'].forEach(function(id){document.getElementById(id).value='';});
+    window.open(r.url,'_blank');
+  }).catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// ---------- CONSENTIMIENTO + FIRMA ----------
+var sigCtx, sigDirty=false;
+function sigInit(){
+  var c=document.getElementById('sigpad');
+  var r=c.getBoundingClientRect();
+  if(c.width!==Math.round(r.width*2)){ c.width=Math.round(r.width*2); c.height=360; }
+  sigCtx=c.getContext('2d');
+  sigCtx.lineWidth=3; sigCtx.lineCap='round'; sigCtx.strokeStyle='#1a1a1a';
+  var pos=function(e){ var rc=c.getBoundingClientRect(); var t=e.touches?e.touches[0]:e;
+    return {x:(t.clientX-rc.left)*(c.width/rc.width), y:(t.clientY-rc.top)*(c.height/rc.height)}; };
+  var down=false;
+  var start=function(e){ down=true; sigDirty=true; var p=pos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x,p.y); e.preventDefault(); };
+  var move=function(e){ if(!down)return; var p=pos(e); sigCtx.lineTo(p.x,p.y); sigCtx.stroke(); e.preventDefault(); };
+  c.onpointerdown=start; c.onpointermove=move; c.onpointerup=function(){down=false;};
+  c.ontouchstart=start; c.ontouchmove=move; c.ontouchend=function(){down=false;};
+}
+function sigClear(){ var c=document.getElementById('sigpad'); sigCtx.clearRect(0,0,c.width,c.height); sigDirty=false; }
+function consentSend(btn){
+  if(!pickSelId.co){ toast('Primero elegí el paciente'); return; }
+  if(!sigDirty){ toast('Falta la firma del paciente'); return; }
+  var c=document.getElementById('sigpad');
+  var out=document.createElement('canvas'); out.width=c.width; out.height=c.height;
+  var octx=out.getContext('2d'); octx.fillStyle='#FFFFFF'; octx.fillRect(0,0,out.width,out.height); octx.drawImage(c,0,0);
+  var b64=out.toDataURL('image/png').split(',')[1];
+  busy(btn,true);
+  api('consentSave',{folderId:pickSelId.co, tipo:document.getElementById('coTipo').value,
+    texto:document.getElementById('coTexto').value, firma:b64,
+    aclaracion:document.getElementById('coAcl').value, dni:document.getElementById('coDni').value})
+  .then(function(r){ busy(btn,false); toast('Consentimiento guardado ✓'); sigClear(); window.open(r.url,'_blank'); })
+  .catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// ---------- INSUMOS ----------
+function insumosLoad(){
+  var box=document.getElementById('insList');
+  box.innerHTML='<div class="spin"></div>';
+  api('insumosStock').then(function(list){
+    if(!list.length){ box.innerHTML='<p class="muted">Sin insumos cargados</p>'; return; }
+    box.innerHTML=list.map(function(i){
+      return '<div class="card"><div class="row"><div style="font-weight:600;font-size:13.5px">'+esc(i.nombre)+'</div>'
+        +'<span class="chip '+(i.bajo?'bad':'ok')+'">'+esc(i.actual)+' / mín '+esc(i.minimo)+'</span></div>'
+        +'<div class="muted" style="margin-top:5px">'+esc(i.cat)+(i.ubicacion?' · '+esc(i.ubicacion):'')+(i.unidad?' · '+esc(i.unidad):'')+'</div>'
+        +(i.bajo?'<div style="font-size:12px;color:var(--bad);margin-top:5px;font-weight:600">⚠ Stock bajo — pedir reposición</div>':'')+'</div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+
+// ---------- CIERRE PROFESIONAL ----------
+function finLoad(){
+  var box=document.getElementById('finBody');
+  box.innerHTML='<div class="spin"></div>';
+  document.getElementById('finForm').style.display='none';
+  api('finCierre').then(function(d){
+    if(!d.rows.length){ box.innerHTML='<p class="muted">Sin datos de cierre por ahora</p>'; }
+    else{
+      box.innerHTML=d.rows.map(function(r){
+        var h='<div class="card"><div style="font-family:\'Cormorant Garamond\',serif;font-size:20px;color:var(--gold-l);margin-bottom:10px">'+esc(r.profesional)+'</div>';
+        var main=['Total cobrado','Parte profesional','Neto a pagar'];
+        Object.keys(r).forEach(function(k){
+          if(k==='profesional'||!String(r[k]).trim()) return;
+          var big=main.indexOf(k)>-1;
+          h+='<div class="row" style="padding:5px 0;border-bottom:1px solid rgba(201,168,76,.1)">'
+            +'<span class="muted" style="font-size:'+(big?'12.5px':'11.5px')+'">'+esc(k)+'</span>'
+            +'<span style="font-weight:'+(big?'600':'400')+';font-size:'+(big?'16px':'13px')+';color:'+(k==='Neto a pagar'?'var(--gold-l)':'var(--text)')+'">$ '+esc(r[k])+'</span></div>';
+        });
+        return h+'</div>';
+      }).join('');
+    }
+    if(d.canAdd){
+      document.getElementById('finForm').style.display='block';
+      var f=document.getElementById('fmFecha');
+      if(!f.value) f.value=new Date().toISOString().slice(0,10);
+    }
+  }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+function finMovSend(btn){
+  var imp=document.getElementById('fmImp').value.replace(/[^\d.,]/g,'').replace(/\./g,'').replace(',','.');
+  if(!imp||!document.getElementById('fmCon').value.trim()){ toast('Completá concepto e importe'); return; }
+  var fparts=document.getElementById('fmFecha').value.split('-');
+  busy(btn,true);
+  api('finMovAdd',{fecha:fparts.length===3?fparts[2]+'/'+fparts[1]+'/'+fparts[0]:'',
+    paciente:document.getElementById('fmPac').value.trim(), concepto:document.getElementById('fmCon').value.trim(),
+    tipo:document.getElementById('fmTipo').value, profesional:document.getElementById('fmProf').value.trim(),
+    medio:document.getElementById('fmMedio').value, importe:imp})
+  .then(function(){ busy(btn,false); toast('Movimiento guardado ✓');
+    ['fmPac','fmCon','fmProf','fmImp'].forEach(function(id){document.getElementById(id).value='';});
+  }).catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// ---------- ATENEO ----------
+function ateneoTab(i){
+  document.getElementById('at0').classList.toggle('sel',i===0);
+  document.getElementById('at1').classList.toggle('sel',i===1);
+  document.getElementById('aForm').style.display=i===1?'block':'none';
+  document.getElementById('aList').style.display=i===0?'block':'none';
+  if(i===1) return;
+  var box=document.getElementById('aList');
+  box.innerHTML='<div class="spin"></div>';
+  api('ateneoList').then(function(list){
+    if(!list.length){ box.innerHTML='<p class="muted">Sin casos cargados</p>'; return; }
+    box.innerHTML=list.map(function(a){
+      return '<div class="card"><div class="row"><div style="font-weight:600;font-size:14px">'+esc(a.paciente)+'</div><span class="chip">'+esc(a.presentador||'—')+'</span></div>'
+        +(a.diag?'<div style="font-size:13px;margin-top:6px">'+esc(a.diag)+'</div>':'')
+        +(a.plan?'<div class="muted" style="margin-top:4px">Plan: '+esc(a.plan)+'</div>':'')
+        +'<div class="muted" style="margin-top:6px">'+esc(a.fecha)+'</div></div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML=''; toast(e.message); });
+}
+function ateneoSend(btn){
+  var p={paciente:document.getElementById('aPac').value.trim(), presentador:document.getElementById('aPres').value.trim(),
+    diagnostico:document.getElementById('aDx').value, plan:document.getElementById('aPlan').value};
+  if(!p.paciente){ toast('Falta el paciente'); return; }
+  busy(btn,true);
+  api('ateneoAdd',p).then(function(){ busy(btn,false); toast('Caso agregado a ateneo ✓');
+    ['aPac','aPres','aDx','aPlan'].forEach(function(id){document.getElementById(id).value='';});
+    ateneoTab(0);
+  }).catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// ---------- PWA ----------
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+</script>
+</body>
+</html>
