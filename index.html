@@ -122,10 +122,10 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
     <div class="tile" onclick="go('seg')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div><div class="tname">Ficha de seguimiento</div><div class="tdesc">Ver y completar seguimientos</div></div>
     <div class="tile" onclick="go('kaizen')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3.5 21 19.5H3z"/><path d="M12 10v4M12 16.8v.2"/></svg></div><div class="tname">Kaizen</div><div class="tdesc">Reportar problemas o mejoras</div></div>
     <div class="tile" onclick="go('deriv')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 7h11M11 3.5 15 7l-4 3.5M20 17H9M13 13.5 9 17l4 3.5"/></svg></div><div class="tname">Derivaciones</div><div class="tdesc">Pendientes y completadas</div></div>
-    <div class="tile" onclick="go('hc')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l4 4v13H6z"/><path d="M14.5 3.5V8H19M9.5 13h5M12 10.5v5"/></svg></div><div class="tname">Historia clínica</div><div class="tdesc">Completar o actualizar HC</div></div>
     <div class="tile" onclick="go('consent')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6z"/><path d="M9 8h6M9 11.5h6M9 17c.8-1.4 2-1.4 2.6 0 .6 1.2 1.6 1.2 2.4-.5"/></svg></div><div class="tname">Consentimiento</div><div class="tdesc">Firma en el celular → PDF</div></div>
     <div class="tile" onclick="go('ateneo')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M2.5 19c.6-3 2.6-4.5 5-4.5M21.5 19c-.6-3-2.6-4.5-5-4.5M7.5 20c.5-3.5 2.4-5 4.5-5s4 1.5 4.5 5"/></svg></div><div class="tname">Ateneo</div><div class="tdesc">Casos para presentar</div></div>
-    <div class="tile" onclick="go('fin')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></div><div class="tname">Cierre profesional</div><div class="tdesc">Tu liquidación del período</div></div>
+    <div class="tile" id="tile-fin" style="display:none" onclick="go('fin')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></div><div class="tname">Cierre profesional</div><div class="tdesc">Tu liquidación por mes</div></div>
+    <div class="tile" id="tile-mov" style="display:none" onclick="go('mov')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div><div class="tname">Cargar movimiento</div><div class="tdesc">Solo administración</div></div>
     <div class="tile" onclick="go('insumos')"><div class="icon"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div><div class="tname">Insumos</div><div class="tdesc">Pedir materiales y ver stock</div></div>
     <a class="tile wide" href="https://www.tuturno.io/" target="_blank" rel="noopener"><div class="icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div><div style="margin-left:12px"><div class="tname">Turnos · TuTurno</div><div class="tdesc">Abrir la agenda del instituto</div></div></a>
   </div>
@@ -252,24 +252,27 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
 <!-- CIERRE PROFESIONAL -->
 <section class="screen" id="s-fin">
   <h1 class="title">Cierre profesional</h1>
-  <p class="sub">Liquidación del período</p>
-  <div id="finBody"><div class="spin"></div></div>
-  <div id="finForm" style="display:none">
-    <div class="card" style="margin-top:20px;border-color:var(--gold)">
-      <div style="font-weight:600;font-size:14px;margin-bottom:4px">Cargar movimiento</div>
-      <div class="muted">Se guarda en MOVIMIENTOS_APP para validar después</div>
-      <label>Fecha</label><input id="fmFecha" type="date">
-      <label>Paciente</label><input id="fmPac" placeholder="Apellido y nombre (o vacío si no aplica)">
-      <label>Concepto</label><input id="fmCon" placeholder="Ej: Pago cuota 3, seña, etc.">
-      <label>Tipo</label>
-      <select id="fmTipo"><option>Pago paciente</option><option>Cobro directo</option><option>Gasto</option><option>Ajuste</option><option>Otro</option></select>
-      <label>Profesional</label><input id="fmProf" placeholder="Profesional asociado">
-      <label>Medio</label>
-      <select id="fmMedio"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Otro</option></select>
-      <label>Importe ($)</label><input id="fmImp" inputmode="numeric" placeholder="0">
-      <button class="btn" onclick="finMovSend(this)">Guardar movimiento</button>
-    </div>
-  </div>
+  <p class="sub">Elegí el mes para ver la liquidación</p>
+  <div id="finProfWrap" style="display:none"><label>Profesional</label><select id="finProf" onchange="finLoad()"></select></div>
+  <label>Mes</label>
+  <select id="finMes" onchange="finLoad()"></select>
+  <div id="finBody" style="margin-top:16px"><div class="spin"></div></div>
+</section>
+
+<!-- CARGAR MOVIMIENTO (solo administración) -->
+<section class="screen" id="s-mov">
+  <h1 class="title">Cargar movimiento</h1>
+  <p class="sub">Se guarda en MOVIMIENTOS_APP para validar después</p>
+  <label>Fecha</label><input id="fmFecha" type="date">
+  <label>Paciente</label><input id="fmPac" placeholder="Apellido y nombre (o vacío si no aplica)">
+  <label>Concepto</label><input id="fmCon" placeholder="Ej: Pago cuota 3, seña, etc.">
+  <label>Tipo</label>
+  <select id="fmTipo"><option>Pago paciente</option><option>Cobro directo</option><option>Gasto</option><option>Ajuste</option><option>Otro</option></select>
+  <label>Profesional</label><input id="fmProf" placeholder="Profesional asociado">
+  <label>Medio</label>
+  <select id="fmMedio"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Otro</option></select>
+  <label>Importe ($)</label><input id="fmImp" inputmode="numeric" placeholder="0">
+  <button class="btn" onclick="finMovSend(this)">Guardar movimiento</button>
 </section>
 
 <!-- ATENEO -->
@@ -340,6 +343,7 @@ function startApp(){
   document.getElementById('avatar').textContent = (USER.name||'?').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
   var d=new Date(), dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'], meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   document.getElementById('udate').textContent = dias[d.getDay()]+' '+d.getDate()+' de '+meses[d.getMonth()]+' · ¿Qué necesitás hoy?';
+  finRoleCheck();
 }
 function logout(){ if(confirm('¿Cerrar sesión?')){ sessionStorage.clear(); location.reload(); } }
 
@@ -356,6 +360,7 @@ function go(s){
   if(s==='ateneo') ateneoTab(0);
   if(s==='consent') sigInit();
   if(s==='fin') finLoad();
+  if(s==='mov'){ var f=document.getElementById('fmFecha'); if(!f.value) f.value=new Date().toISOString().slice(0,10); }
   if(s==='insumos') insumosLoad();
 }
 document.getElementById('s-home').classList.add('on');
@@ -643,32 +648,49 @@ function insumosLoad(){
 }
 
 // ---------- CIERRE PROFESIONAL ----------
+var finInit=false;
+function finSetup(){
+  if(finInit) return; finInit=true;
+  var meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var sel=document.getElementById('finMes'), now=new Date(), h='';
+  for(var i=0;i<12;i++){
+    var d=new Date(now.getFullYear(), now.getMonth()-i, 1);
+    h+='<option value="'+(d.getMonth()+1)+'-'+d.getFullYear()+'">'+meses[d.getMonth()]+' '+d.getFullYear()+'</option>';
+  }
+  sel.innerHTML=h;
+}
 function finLoad(){
+  finSetup();
   var box=document.getElementById('finBody');
   box.innerHTML='<div class="spin"></div>';
-  document.getElementById('finForm').style.display='none';
-  api('finCierre').then(function(d){
-    if(!d.rows.length){ box.innerHTML='<p class="muted">Sin datos de cierre por ahora</p>'; }
-    else{
-      box.innerHTML=d.rows.map(function(r){
-        var h='<div class="card"><div style="font-family:\'Cormorant Garamond\',serif;font-size:20px;color:var(--gold-l);margin-bottom:10px">'+esc(r.profesional)+'</div>';
-        var main=['Total cobrado','Parte profesional','Neto a pagar'];
-        Object.keys(r).forEach(function(k){
-          if(k==='profesional'||!String(r[k]).trim()) return;
-          var big=main.indexOf(k)>-1;
-          h+='<div class="row" style="padding:5px 0;border-bottom:1px solid rgba(201,168,76,.1)">'
-            +'<span class="muted" style="font-size:'+(big?'12.5px':'11.5px')+'">'+esc(k)+'</span>'
-            +'<span style="font-weight:'+(big?'600':'400')+';font-size:'+(big?'16px':'13px')+';color:'+(k==='Neto a pagar'?'var(--gold-l)':'var(--text)')+'">$ '+esc(r[k])+'</span></div>';
-        });
-        return h+'</div>';
-      }).join('');
+  var mv=document.getElementById('finMes').value.split('-');
+  var prof=document.getElementById('finProf').value||'';
+  api('finCierre',{mes:mv[0], anio:mv[1], prof:prof}).then(function(d){
+    if(d.admin){
+      var wrap=document.getElementById('finProfWrap');
+      var sel=document.getElementById('finProf');
+      if(wrap.style.display==='none' && d.profs.length){
+        sel.innerHTML=d.profs.map(function(p){ return '<option'+(p===d.profesional?' selected':'')+'>'+esc(p)+'</option>'; }).join('');
+        wrap.style.display='block';
+      }
     }
-    if(d.canAdd){
-      document.getElementById('finForm').style.display='block';
-      var f=document.getElementById('fmFecha');
-      if(!f.value) f.value=new Date().toISOString().slice(0,10);
-    }
+    var h='<div class="card"><div class="row"><div style="font-family:\'Cormorant Garamond\',serif;font-size:20px;color:var(--gold-l)">'+esc(d.profesional)+'</div>'
+      +'<span class="chip">'+esc(d.periodo)+'</span></div><div style="margin-top:10px">';
+    if(!d.items.length) h+='<p class="muted">Sin datos para este período</p>';
+    d.items.forEach(function(it){
+      var big=/bruto ajustado|resultado|neto/i.test(it.label);
+      h+='<div class="row" style="padding:6px 0;border-bottom:1px solid rgba(201,168,76,.1)">'
+        +'<span class="muted" style="font-size:'+(big?'13px':'11.5px')+';'+(big?'color:var(--text);font-weight:600':'')+'">'+esc(it.label)+'</span>'
+        +'<span style="font-weight:'+(big?'600':'400')+';font-size:'+(big?'16px':'13px')+';color:'+(big?'var(--gold-l)':'var(--text)')+'">'+esc(it.value)+'</span></div>';
+    });
+    box.innerHTML=h+'</div></div>';
   }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+function finRoleCheck(){
+  api('finRole').then(function(r){
+    if(r.access) document.getElementById('tile-fin').style.display='flex';
+    if(r.canAdd) document.getElementById('tile-mov').style.display='flex';
+  }).catch(function(){});
 }
 function finMovSend(btn){
   var imp=document.getElementById('fmImp').value.replace(/[^\d.,]/g,'').replace(/\./g,'').replace(',','.');
@@ -697,6 +719,7 @@ function ateneoTab(i){
     if(!list.length){ box.innerHTML='<p class="muted">Sin casos cargados</p>'; return; }
     box.innerHTML=list.map(function(a){
       return '<div class="card"><div class="row"><div style="font-weight:600;font-size:14px">'+esc(a.paciente)+'</div><span class="chip">'+esc(a.presentador||'—')+'</span></div>'
+        +(a.caso?'<div class="muted" style="margin-top:3px">'+esc(a.caso)+'</div>':'')
         +(a.diag?'<div style="font-size:13px;margin-top:6px">'+esc(a.diag)+'</div>':'')
         +(a.plan?'<div class="muted" style="margin-top:4px">Plan: '+esc(a.plan)+'</div>':'')
         +'<div class="muted" style="margin-top:6px">'+esc(a.fecha)+'</div></div>';
