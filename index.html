@@ -343,8 +343,8 @@ var CLIENT_ID = '50761601811-2dsta3rf06erretg9k3labelsm43k9ml.apps.googleusercon
 var INSUMOS_URL = 'https://forms.gle/UxtA6kVr11X6FwGg7'; // Google Form de solicitud de insumos
 // ============================================================
 
-var TOKEN = sessionStorage.getItem('tk') || '';
-var USER = JSON.parse(sessionStorage.getItem('usr')||'null');
+var TOKEN = localStorage.getItem('dvtk') || sessionStorage.getItem('tk') || '';
+var USER = JSON.parse(localStorage.getItem('dvusr') || sessionStorage.getItem('usr') || 'null');
 
 function toast(m){ var t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},2800); }
 function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
@@ -353,7 +353,16 @@ function api(action, payload){
   return fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain'},
     body: JSON.stringify({action:action, token:TOKEN, payload:payload||{}})})
     .then(function(r){ return r.json(); })
-    .then(function(r){ if(!r.ok) throw new Error(r.error); return r.data; });
+    .then(function(r){
+      if(!r.ok){
+        if(/sesión (vencida|no válida)/i.test(r.error||'')){
+          localStorage.removeItem('dvtk'); localStorage.removeItem('dvusr'); sessionStorage.clear();
+          setTimeout(function(){ location.reload(); }, 1500);
+        }
+        throw new Error(r.error);
+      }
+      return r.data;
+    });
 }
 
 // ---------- LOGIN ----------
@@ -368,11 +377,17 @@ window.addEventListener('load', function(){
   }, 150);
 });
 function onCred(resp){
-  TOKEN = resp.credential;
-  sessionStorage.setItem('tk', TOKEN);
-  api('me').then(function(u){
-    USER=u; sessionStorage.setItem('usr', JSON.stringify(u)); startApp();
-  }).catch(function(e){ TOKEN=''; sessionStorage.clear(); toast(e.message); });
+  // Cambiamos el token de Google (dura 1 h) por una sesión propia de 90 días
+  fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({action:'login', token:resp.credential})})
+  .then(function(r){ return r.json(); })
+  .then(function(r){
+    if(!r.ok) throw new Error(r.error);
+    TOKEN=r.data.token; USER=r.data.user;
+    localStorage.setItem('dvtk', TOKEN);
+    localStorage.setItem('dvusr', JSON.stringify(USER));
+    startApp();
+  }).catch(function(e){ TOKEN=''; localStorage.clear(); toast(e.message); });
 }
 function startApp(){
   document.getElementById('login').style.display='none';
@@ -383,7 +398,7 @@ function startApp(){
   finRoleCheck();
   notifStart();
 }
-function logout(){ if(confirm('¿Cerrar sesión?')){ sessionStorage.clear(); location.reload(); } }
+function logout(){ if(confirm('¿Cerrar sesión?')){ localStorage.removeItem('dvtk'); localStorage.removeItem('dvusr'); sessionStorage.clear(); location.reload(); } }
 
 // ---------- NAV ----------
 var NAVMAP={home:'n-home',buscar:'n-buscar',kaizen:'n-kaizen',seg:'n-seg'};
