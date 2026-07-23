@@ -831,7 +831,7 @@ function recepLoad(silent){
     box.innerHTML=d.rows.map(function(r){
       var alerta = r.espera!=='' && Number(r.espera)>d.cfg.ALERTA_ESPERA_MIN && ['Esperando','Profesional avisado','Llamado'].indexOf(r.estado)>-1;
       var fin=['Finalizado','Cancelado','No presentado'].indexOf(r.estado)>-1;
-      var wa = r.wa ? 'https://wa.me/'+String(r.wa).replace(/\D/g,'')+'?text='+encodeURIComponent('Llegó '+r.paciente+(r.hTurno?', paciente de las '+r.hTurno:'')+'. Está aguardando en recepción.') : '';
+      var wa = r.telPac ? 'https://wa.me/'+String(r.telPac).replace(/\D/g,'') : '';
       var h='<div class="card" style="border-left:3px solid '+estColor(r,d.cfg)+';border-radius:0 15px 15px 0'+(fin?';opacity:.55':'')+'">'
         +'<div class="row"><div style="font-weight:600;font-size:14px">'+(r.estado==='Urgencia'?'⚠ ':'')+esc(r.paciente)+'</div>'
         +(alerta?'<span class="chip warn">Espera '+esc(r.espera)+' min ⚠</span>':puntChip(r.punt))+'</div>'
@@ -843,7 +843,10 @@ function recepLoad(silent){
         +'<select style="flex:1;min-width:130px;padding:8px 10px;font-size:12px;border-radius:10px" onchange="recepSetEstado(\''+r.id+'\',this.value)">'
         +d.estados.map(function(s){return '<option'+(s===r.estado?' selected':'')+'>'+s+'</option>';}).join('')+'</select>'
         +(!fin?'<button class="chip" style="border:none;cursor:pointer" onclick="recepReenviar(\''+r.id+'\')">↻ Aviso</button>':'')
-        +(wa&&!fin?'<a class="wa" href="'+wa+'" target="_blank">WhatsApp</a>':'')
+        +(wa&&!fin?'<a class="wa" href="'+wa+'" target="_blank">WA paciente</a>':'')
+        +'</div><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">'
+        +(r.carpeta?'<a class="chip" style="text-decoration:none" href="'+esc(r.carpeta)+'" target="_blank">📁 Carpeta ↗</a>':'')
+        +(r.segFila?'<button class="chip" style="border:none;cursor:pointer" onclick="segOpen('+parseInt(r.segFila,10)+')">Ficha seguimiento</button>':(d.admin?'<button class="chip warn" style="border:none;cursor:pointer" onclick="recepVinc(\''+r.id+'\')">🔗 Vincular ficha</button>':''))
         +'</div></div>';
       return h;
     }).join('');
@@ -854,6 +857,18 @@ function recepSetEstado(id, estado){
 }
 function recepReenviar(id){
   api('recepAvisar',{id:id}).then(function(){ toast('Aviso reenviado ✓'); recepLoad(true); }).catch(function(e){toast(e.message);});
+}
+function recepVinc(id){
+  api('recepVincular',{id:id}).then(function(c){
+    if(!c.length){ toast('No encontré candidatos en la ficha de seguimiento'); return; }
+    var txt='¿Con qué paciente lo vinculo? Escribí el número:\n\n'
+      +c.map(function(x,i){ return (i+1)+') '+x.nombre+(x.dni?' · DNI '+x.dni:''); }).join('\n');
+    var n=parseInt(prompt(txt),10);
+    if(!n || n<1 || n>c.length) return;
+    api('recepVincularSet',{id:id, row:c[n-1].row})
+      .then(function(){ toast('Vinculado con '+c[n-1].nombre+' ✓'); recepLoad(true); })
+      .catch(function(e){ toast(e.message); });
+  }).catch(function(e){ toast(e.message); });
 }
 function recepAddSend(btn){
   var pac=document.getElementById('rmPac').value.trim();
@@ -885,7 +900,11 @@ function mispacLoad(silent){
           +'</div><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">'
           +'<button class="chip warn" style="border:none;cursor:pointer" onclick="pacDemora(\''+r.id+'\')">Estoy demorado…</button>'
           +'<button class="chip" style="border:none;cursor:pointer" onclick="pacNota(\''+r.id+'\')">Nota a recepción…</button>'
-          +'</div>';
+          +'</div>'
+          +((r.carpeta||r.segFila)?'<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">'
+            +(r.carpeta?'<a class="chip" style="text-decoration:none" href="'+esc(r.carpeta)+'" target="_blank">📁 Carpeta ↗</a>':'')
+            +(r.segFila?'<button class="chip" style="border:none;cursor:pointer" onclick="segOpen('+parseInt(r.segFila,10)+')">Ficha seguimiento</button>':'')
+            +'</div>':'');
       }
       return h+'</div>';
     }).join('');
