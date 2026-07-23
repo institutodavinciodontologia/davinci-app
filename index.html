@@ -109,7 +109,13 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
      <path fill="url(#hg)" fill-rule="evenodd" d="M2 2h96v96H2z M50 3.5a46.5 46.5 0 1 0 0 93 46.5 46.5 0 0 0 0-93z"/></svg>
     <div><div class="b1">Instituto<br>Da Vinci</div><div class="b2">ODONTOLOGÍA</div></div>
   </div>
-  <div class="avatar" id="avatar" onclick="logout()" title="Cerrar sesión">·</div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button id="bell" onclick="go('notif')" style="background:none;border:none;position:relative;cursor:pointer;padding:4px;display:none">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D9BC6B" stroke-width="1.8" stroke-linecap="round"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
+      <span id="bellBadge" style="display:none;position:absolute;top:0;right:-2px;background:var(--bad);color:#fff;font-size:9px;font-weight:700;border-radius:99px;padding:1px 5px">0</span>
+    </button>
+    <div class="avatar" id="avatar" onclick="logout()" title="Cerrar sesión">·</div>
+  </div>
 </header>
 
 <main>
@@ -124,6 +130,8 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
     <div class="tile" onclick="go('deriv')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 7h11M11 3.5 15 7l-4 3.5M20 17H9M13 13.5 9 17l4 3.5"/></svg></div><div class="tname">Derivaciones</div><div class="tdesc">Pendientes y completadas</div></div>
     <div class="tile" onclick="go('consent')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6z"/><path d="M9 8h6M9 11.5h6M9 17c.8-1.4 2-1.4 2.6 0 .6 1.2 1.6 1.2 2.4-.5"/></svg></div><div class="tname">Consentimiento</div><div class="tdesc">Firma en el celular → PDF</div></div>
     <div class="tile" onclick="go('ateneo')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M2.5 19c.6-3 2.6-4.5 5-4.5M21.5 19c-.6-3-2.6-4.5-5-4.5M7.5 20c.5-3.5 2.4-5 4.5-5s4 1.5 4.5 5"/></svg></div><div class="tname">Ateneo</div><div class="tdesc">Casos para presentar</div></div>
+    <div class="tile" id="tile-mispac" style="display:none" onclick="go('mispac')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20c.8-4 3.5-6 7-6s6.2 2 7 6"/></svg></div><div class="tname">Mis pacientes</div><div class="tdesc">Llegadas y sala de espera</div></div>
+    <div class="tile" id="tile-recep" style="display:none" onclick="go('recep')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 20V8l8.5-4.5L20.5 8v12"/><path d="M9 20v-5h6v5M3.5 12h17"/></svg></div><div class="tname">Recepción</div><div class="tdesc">Tablero de llegadas del día</div></div>
     <div class="tile" id="tile-fin" style="display:none" onclick="go('fin')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></div><div class="tname">Cierre profesional</div><div class="tdesc">Tu liquidación por mes</div></div>
     <div class="tile" id="tile-mov" style="display:none" onclick="go('mov')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div><div class="tname">Cargar movimiento</div><div class="tdesc">Solo administración</div></div>
     <div class="tile" onclick="go('insumos')"><div class="icon"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div><div class="tname">Insumos</div><div class="tdesc">Pedir materiales y ver stock</div></div>
@@ -276,6 +284,34 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
   <button class="btn" onclick="finMovSend(this)">Guardar movimiento</button>
 </section>
 
+<!-- AVISOS (campanita) -->
+<section class="screen" id="s-notif">
+  <h1 class="title">Avisos</h1>
+  <p class="sub">Llegadas de tus pacientes</p>
+  <div id="notifList"><div class="spin"></div></div>
+</section>
+
+<!-- TABLERO RECEPCIÓN -->
+<section class="screen" id="s-recep">
+  <div class="row"><h1 class="title">Recepción</h1><button class="chip" style="border:none;cursor:pointer" onclick="recepLoad()">↻ Actualizar</button></div>
+  <p class="sub" id="recepSub">Llegadas de hoy · se actualiza solo cada 30 s</p>
+  <button class="btn ghost" style="margin:0 0 14px;padding:11px" onclick="recepToggleForm()">＋ Agregar llegada manual</button>
+  <div id="recepForm" style="display:none" class="card">
+    <label>Paciente</label><input id="rmPac" placeholder="Apellido y nombre">
+    <label>Profesional</label><select id="rmProf"></select>
+    <label>Hora del turno</label><input id="rmHora" type="time">
+    <button class="btn" onclick="recepAddSend(this)">Registrar llegada</button>
+  </div>
+  <div id="recepList"><div class="spin"></div></div>
+</section>
+
+<!-- MIS PACIENTES (vista profesional) -->
+<section class="screen" id="s-mispac">
+  <h1 class="title">Mis pacientes</h1>
+  <p class="sub">Sala de espera de hoy</p>
+  <div id="mispacList"><div class="spin"></div></div>
+</section>
+
 <!-- ATENEO -->
 <section class="screen" id="s-ateneo">
   <h1 class="title">Ateneo</h1>
@@ -345,6 +381,7 @@ function startApp(){
   var d=new Date(), dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'], meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   document.getElementById('udate').textContent = dias[d.getDay()]+' '+d.getDate()+' de '+meses[d.getMonth()]+' · ¿Qué necesitás hoy?';
   finRoleCheck();
+  notifStart();
 }
 function logout(){ if(confirm('¿Cerrar sesión?')){ sessionStorage.clear(); location.reload(); } }
 
@@ -363,6 +400,9 @@ function go(s){
   if(s==='fin') finLoad();
   if(s==='mov'){ var f=document.getElementById('fmFecha'); if(!f.value) f.value=new Date().toISOString().slice(0,10); }
   if(s==='insumos') insumosLoad();
+  if(s==='recep') recepLoad();
+  if(s==='mispac') mispacLoad();
+  if(s==='notif') notifLoad();
 }
 document.getElementById('s-home').classList.add('on');
 function openInsumos(){
@@ -705,6 +745,168 @@ function finMovSend(btn){
   .then(function(){ busy(btn,false); toast('Movimiento guardado ✓');
     ['fmPac','fmCon','fmProf','fmImp'].forEach(function(id){document.getElementById(id).value='';});
   }).catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// ---------- RECEPCIÓN + AVISOS ----------
+var notifTimer=null, notifLast=-1, recepData=null;
+function beep(){
+  try{
+    var ctx=new (window.AudioContext||window.webkitAudioContext)();
+    var o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value=880; g.gain.value=0.15;
+    o.start(); o.stop(ctx.currentTime+0.25);
+  }catch(e){}
+  if(navigator.vibrate) navigator.vibrate([180,80,180]);
+}
+function notifStart(){
+  if(notifTimer) return;
+  notifTick();
+  notifTimer=setInterval(notifTick, 35000);
+}
+function notifTick(){
+  api('notifPoll').then(function(d){
+    if(d.tablero) document.getElementById('tile-recep').style.display='flex';
+    if(d.prof) document.getElementById('tile-mispac').style.display='flex';
+    if(d.prof || d.tablero || d.avisos.length) document.getElementById('bell').style.display='block';
+    var b=document.getElementById('bellBadge');
+    b.style.display = d.count>0 ? 'block':'none';
+    b.textContent = d.count;
+    if(notifLast>=0 && d.count>notifLast){ beep(); toast('🔔 Llegó un paciente'); }
+    notifLast=d.count;
+    if(document.getElementById('s-recep').classList.contains('on')) recepLoad(true);
+    if(document.getElementById('s-mispac').classList.contains('on')) mispacLoad(true);
+  }).catch(function(){});
+}
+function puntChip(p){
+  if(p==='En horario') return '<span class="chip ok">En horario</span>';
+  if(p==='Temprano') return '<span class="chip warn">Temprano</span>';
+  if(p==='Tarde') return '<span class="chip bad">Tarde</span>';
+  return '';
+}
+function estColor(r, cfg){
+  if(['Urgencia','Requiere ayuda'].indexOf(r.estado)>-1 || r.punt==='Tarde') return 'var(--bad)';
+  if(['Finalizado','Cancelado','No presentado'].indexOf(r.estado)>-1) return '#555';
+  if(r.punt==='Temprano' || (cfg && r.espera!=='' && Number(r.espera)>cfg.ALERTA_ESPERA_MIN)) return 'var(--warn)';
+  return 'var(--ok)';
+}
+
+// --- Campanita ---
+function notifLoad(){
+  var box=document.getElementById('notifList');
+  box.innerHTML='<div class="spin"></div>';
+  api('notifPoll').then(function(d){
+    notifLast=d.count;
+    var b=document.getElementById('bellBadge');
+    b.style.display=d.count>0?'block':'none'; b.textContent=d.count;
+    if(!d.avisos.length){ box.innerHTML='<p class="muted">Sin avisos por ahora</p>'; return; }
+    box.innerHTML=d.avisos.map(function(a){
+      return '<div class="card" style="border-color:'+(a.visto?'var(--dim)':'var(--gold)')+'">'
+        +'<div style="font-weight:600;font-size:14px;color:'+(a.visto?'var(--text)':'var(--gold-l)')+'">'+(a.visto?'':'🔔 ')+'Llegó '+esc(a.paciente)+'</div>'
+        +'<div class="muted" style="margin-top:3px">'+(a.hTurno?'Paciente de las '+esc(a.hTurno)+' · ':'')+esc(a.estado)+' · Llegó '+esc(a.hLlegada)+(a.espera!==''?' · Espera '+esc(a.espera)+' min':'')+'</div>'
+        +'<div class="row" style="margin-top:8px">'+puntChip(a.punt)
+        +'<span style="display:flex;gap:6px">'
+        +(!a.visto?'<button class="chip" style="border:none;cursor:pointer" onclick="notifVisto(\''+a.id+'\')">✓ Visto</button>':'')
+        +'<button class="chip ok" style="border:none;cursor:pointer" onclick="pacAccion(\''+a.id+'\',\'Llamado\')">Puede pasar</button>'
+        +'</span></div></div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML=''; toast(e.message); });
+}
+function notifVisto(id){ api('notifSeen',{id:id}).then(function(){ notifLoad(); }).catch(function(e){toast(e.message);}); }
+
+// --- Tablero ---
+function recepToggleForm(){
+  var f=document.getElementById('recepForm');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+function recepLoad(silent){
+  var box=document.getElementById('recepList');
+  if(!silent) box.innerHTML='<div class="spin"></div>';
+  api('recepList').then(function(d){
+    recepData=d;
+    var sel=document.getElementById('rmProf');
+    if(sel && !sel.options.length) sel.innerHTML=d.profs.map(function(p){return '<option>'+esc(p)+'</option>';}).join('');
+    document.getElementById('recepSub').textContent = d.rows.filter(function(r){return ['Esperando','Profesional avisado','Llamado'].indexOf(r.estado)>-1;}).length+' en sala de espera · se actualiza solo cada 30 s';
+    if(!d.rows.length){ box.innerHTML='<p class="muted">Sin llegadas hoy todavía</p>'; return; }
+    box.innerHTML=d.rows.map(function(r){
+      var alerta = r.espera!=='' && Number(r.espera)>d.cfg.ALERTA_ESPERA_MIN && ['Esperando','Profesional avisado','Llamado'].indexOf(r.estado)>-1;
+      var fin=['Finalizado','Cancelado','No presentado'].indexOf(r.estado)>-1;
+      var wa = r.wa ? 'https://wa.me/'+String(r.wa).replace(/\D/g,'')+'?text='+encodeURIComponent('Llegó '+r.paciente+(r.hTurno?', paciente de las '+r.hTurno:'')+'. Está aguardando en recepción.') : '';
+      var h='<div class="card" style="border-left:3px solid '+estColor(r,d.cfg)+';border-radius:0 15px 15px 0'+(fin?';opacity:.55':'')+'">'
+        +'<div class="row"><div style="font-weight:600;font-size:14px">'+(r.estado==='Urgencia'?'⚠ ':'')+esc(r.paciente)+'</div>'
+        +(alerta?'<span class="chip warn">Espera '+esc(r.espera)+' min ⚠</span>':puntChip(r.punt))+'</div>'
+        +'<div class="muted" style="margin-top:4px">'+esc(r.prof||'—')+(r.hTurno?' · Turno '+esc(r.hTurno):'')+' · Llegó '+esc(r.hLlegada)
+        +(r.espera!==''&&!fin?' · <b style="color:var(--gold-l)">Espera '+esc(r.espera)+' min</b>':'')
+        +(r.hAviso?' · Avisado '+esc(r.hAviso)+(r.vistoPor?' ✓ visto':' (sin confirmar)'):'')+'</div>'
+        +(r.obs?'<div class="muted" style="margin-top:3px;color:var(--warn)">'+esc(r.obs)+'</div>':'')
+        +'<div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">'
+        +'<select style="flex:1;min-width:130px;padding:8px 10px;font-size:12px;border-radius:10px" onchange="recepSetEstado(\''+r.id+'\',this.value)">'
+        +d.estados.map(function(s){return '<option'+(s===r.estado?' selected':'')+'>'+s+'</option>';}).join('')+'</select>'
+        +(!fin?'<button class="chip" style="border:none;cursor:pointer" onclick="recepReenviar(\''+r.id+'\')">↻ Aviso</button>':'')
+        +(wa&&!fin?'<a class="wa" href="'+wa+'" target="_blank">WhatsApp</a>':'')
+        +'</div></div>';
+      return h;
+    }).join('');
+  }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+function recepSetEstado(id, estado){
+  api('recepEstado',{id:id,estado:estado}).then(function(){ toast('Estado: '+estado); recepLoad(true); }).catch(function(e){ toast(e.message); recepLoad(true); });
+}
+function recepReenviar(id){
+  api('recepAvisar',{id:id}).then(function(){ toast('Aviso reenviado ✓'); recepLoad(true); }).catch(function(e){toast(e.message);});
+}
+function recepAddSend(btn){
+  var pac=document.getElementById('rmPac').value.trim();
+  if(pac.length<3){ toast('Ingresá el nombre del paciente'); return; }
+  busy(btn,true);
+  api('recepAdd',{nombre:pac, profesional:document.getElementById('rmProf').value, horaTurno:document.getElementById('rmHora').value})
+  .then(function(){ busy(btn,false); toast('Llegada registrada ✓'); document.getElementById('rmPac').value=''; recepToggleForm(); recepLoad(); })
+  .catch(function(e){ busy(btn,false); toast(e.message); });
+}
+
+// --- Vista profesional ---
+function mispacLoad(silent){
+  var box=document.getElementById('mispacList');
+  if(!silent) box.innerHTML='<div class="spin"></div>';
+  api('recepList').then(function(d){
+    if(!d.rows.length){ box.innerHTML='<p class="muted">Sin pacientes registrados hoy</p>'; return; }
+    box.innerHTML=d.rows.map(function(r){
+      var fin=['Finalizado','Cancelado','No presentado'].indexOf(r.estado)>-1;
+      var h='<div class="card"'+(fin?' style="opacity:.55"':'')+'>'
+        +'<div class="row"><div style="font-weight:600;font-size:14px">'+esc(r.paciente)+'</div>'
+        +'<span class="chip">'+esc(r.estado)+'</span></div>'
+        +'<div class="muted" style="margin-top:4px">'+(r.hTurno?'Turno '+esc(r.hTurno)+' · ':'')+'Llegó '+esc(r.hLlegada)
+        +(r.espera!==''&&!fin?' · <b style="color:var(--gold-l)">Espera '+esc(r.espera)+' min</b>':'')+'</div>';
+      if(!fin){
+        h+='<div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">'
+          +'<button class="chip ok" style="border:none;cursor:pointer" onclick="pacAccion(\''+r.id+'\',\'Llamado\')">Puede pasar</button>'
+          +'<button class="chip" style="border:none;cursor:pointer" onclick="pacAccion(\''+r.id+'\',\'En atención\')">En atención</button>'
+          +'<button class="chip" style="border:none;cursor:pointer" onclick="pacAccion(\''+r.id+'\',\'Finalizado\')">Finalizado</button>'
+          +'</div><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">'
+          +'<button class="chip warn" style="border:none;cursor:pointer" onclick="pacDemora(\''+r.id+'\')">Estoy demorado…</button>'
+          +'<button class="chip" style="border:none;cursor:pointer" onclick="pacNota(\''+r.id+'\')">Nota a recepción…</button>'
+          +'</div>';
+      }
+      return h+'</div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+function pacAccion(id, estado){
+  api('recepEstado',{id:id,estado:estado}).then(function(){
+    api('notifSeen',{id:id}).catch(function(){});
+    toast(estado==='Llamado'?'Recepción lo llama ✓':estado+' ✓');
+    if(document.getElementById('s-notif').classList.contains('on')) notifLoad(); else mispacLoad(true);
+  }).catch(function(e){toast(e.message);});
+}
+function pacDemora(id){
+  var m=prompt('¿Cuántos minutos de demora?','15');
+  if(!m) return;
+  api('recepObs',{id:id,obs:'Profesional demorado '+m.replace(/\D/g,'')+' min'}).then(function(){ toast('Recepción avisada ✓'); mispacLoad(true); }).catch(function(e){toast(e.message);});
+}
+function pacNota(id){
+  var t=prompt('Nota para recepción (ej: falta firmar consentimiento)');
+  if(!t) return;
+  api('recepObs',{id:id,obs:t.slice(0,150)}).then(function(){ toast('Nota enviada ✓'); mispacLoad(true); }).catch(function(e){toast(e.message);});
 }
 
 // ---------- ATENEO ----------

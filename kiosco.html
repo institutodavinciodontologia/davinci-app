@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>Instituto Da Vinci — Recepción</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0A0A;--card:#131311;--gold:#C9A84C;--gold-l:#E8D08A;--dim:rgba(201,168,76,.28);--text:#F5F1E6;--muted:#9B9484;--bad:#E06052}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.wrap{width:100%;max-width:460px;text-align:center}
+.serif{font-family:'Cormorant Garamond',serif}
+.logo{margin-bottom:8px}
+h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;line-height:1.05;
+ background:linear-gradient(180deg,#F3E3A8,#D9BC6B 45%,#B8933A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:15px;color:var(--muted);margin:10px 0 28px}
+.btn{display:block;width:100%;padding:20px;border-radius:16px;border:1px solid var(--dim);background:var(--card);
+ color:var(--text);font-size:18px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:14px}
+.btn:active{transform:scale(.98)}
+.btn.main{background:linear-gradient(135deg,#D9BC6B,#B8933A);color:#141005;border:none}
+.btn.urg{border-color:rgba(224,96,82,.55);color:var(--bad)}
+input,select{width:100%;background:var(--card);border:1px solid var(--dim);border-radius:14px;color:var(--text);
+ font-family:inherit;font-size:18px;padding:17px;outline:none;margin-bottom:14px;text-align:center;-webkit-appearance:none}
+input:focus,select:focus{border-color:var(--gold)}
+label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px;text-align:left}
+.priv{font-size:11px;color:#6b655a;margin-top:26px;line-height:1.5}
+.back{background:none;border:none;color:var(--gold);font-size:15px;font-family:inherit;cursor:pointer;margin-top:6px;padding:10px}
+.big{font-size:64px;margin-bottom:16px}
+.screen{display:none}.screen.on{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="screen on" id="p-home">
+  <div class="logo"><svg width="72" height="72" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3E3A8"/><stop offset=".45" stop-color="#D9BC6B"/><stop offset="1" stop-color="#A8842F"/></linearGradient></defs><path fill="url(#g)" fill-rule="evenodd" d="M2 2h96v96H2z M50 3.5a46.5 46.5 0 1 0 0 93 46.5 46.5 0 0 0 0-93z"/></svg></div>
+  <h1>Bienvenido al<br>Instituto Da Vinci</h1>
+  <p class="sub">Registrá tu llegada tocando una opción</p>
+  <button class="btn main" onclick="show('p-turno')">Tengo turno</button>
+  <button class="btn urg" onclick="show('p-urg')">Vengo por una urgencia</button>
+  <button class="btn" onclick="enviar({tipo:'admin'},this)">Consulta administrativa</button>
+  <button class="btn" onclick="enviar({tipo:'ayuda'},this)">Necesito ayuda</button>
+  <p class="priv">Tus datos se usan únicamente para avisar tu llegada al profesional (Ley 25.326).<br>Esta pantalla se limpia automáticamente.</p>
+</div>
+
+<div class="screen" id="p-turno">
+  <h1 style="font-size:26px">Registrá tu llegada</h1>
+  <p class="sub">Completá estos datos</p>
+  <form autocomplete="off" onsubmit="return false">
+    <label>Tu nombre y apellido</label>
+    <input id="fNombre" autocomplete="off" placeholder="Ej: Juan Pérez">
+    <label>¿Con qué profesional tenés turno?</label>
+    <select id="fProf"><option value="">Cargando…</option></select>
+    <label>Hora aproximada de tu turno</label>
+    <input id="fHora" type="time">
+    <label>Últimos 3-4 números de tu DNI o teléfono <span style="color:#6b655a">(opcional)</span></label>
+    <input id="fIdent" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Ej: 4589">
+    <button class="btn main" onclick="enviarTurno(this)">Registrar mi llegada</button>
+  </form>
+  <button class="back" onclick="reset()">‹ Volver</button>
+</div>
+
+<div class="screen" id="p-urg">
+  <h1 style="font-size:26px;color:var(--bad);-webkit-text-fill-color:var(--bad)">Urgencia</h1>
+  <p class="sub">Avisamos a recepción ahora mismo</p>
+  <form autocomplete="off" onsubmit="return false">
+    <label>Tu nombre y apellido</label>
+    <input id="uNombre" autocomplete="off" placeholder="Ej: Juan Pérez">
+    <label>Un teléfono de contacto</label>
+    <input id="uTel" inputmode="tel" autocomplete="off" placeholder="Ej: 343 5555555">
+    <button class="btn urg" style="background:var(--bad);color:#fff;border:none" onclick="enviarUrg(this)">Avisar urgencia</button>
+  </form>
+  <button class="back" onclick="reset()">‹ Volver</button>
+</div>
+
+<div class="screen" id="p-ok">
+  <div class="big">✓</div>
+  <h1 style="font-size:28px">¡Gracias!</h1>
+  <p class="sub" id="okMsg">Tu llegada fue registrada.<br>En breve te llamaremos.</p>
+</div>
+
+</div>
+
+<script>
+var API_URL='https://script.google.com/macros/s/AKfycbzhXH9OwrV9pSwZ4zFxH4QTK2z9xYhO-pSecGGOOpytIMOXggD-j43OgGcTatYX3men/exec';
+var resetT=null, idleT=null;
+history.replaceState(null,'',location.href);
+window.onpopstate=function(){ history.go(1); };
+
+function api(action, payload){
+  return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({action:action,payload:payload||{}})})
+    .then(function(r){return r.json();})
+    .then(function(r){ if(!r.ok) throw new Error(r.error); return r.data; });
+}
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  clearTimeout(idleT);
+  if(id!=='p-home') idleT=setTimeout(reset, 90000);
+}
+function reset(){
+  ['fNombre','fHora','fIdent','uNombre','uTel'].forEach(function(i){ var el=document.getElementById(i); if(el) el.value=''; });
+  var s=document.getElementById('fProf'); if(s) s.selectedIndex=0;
+  clearTimeout(resetT); clearTimeout(idleT);
+  show('p-home');
+}
+function ok(msg){
+  document.getElementById('okMsg').innerHTML=msg;
+  show('p-ok');
+  resetT=setTimeout(reset, 6000);
+}
+function fail(e){ alert(e.message||'No se pudo registrar. Pedí ayuda en recepción.'); }
+function busyBtn(b,on){ b.disabled=on; b.textContent=on?'Registrando…':b.dataset.t; }
+
+function enviar(p, btn){
+  btn.dataset.t=btn.textContent; busyBtn(btn,true);
+  p.nombre = p.nombre || 'Paciente en recepción';
+  api('kioskAdd', p).then(function(){ busyBtn(btn,false);
+    ok(p.tipo==='admin'?'Avisamos a administración.<br>En breve te atienden.':'Ya avisamos a recepción.<br>En breve se acercan a ayudarte.');
+  }).catch(function(e){ busyBtn(btn,false); fail(e); });
+}
+function enviarTurno(btn){
+  var n=document.getElementById('fNombre').value.trim();
+  var pr=document.getElementById('fProf').value;
+  if(n.length<3){ alert('Ingresá tu nombre y apellido.'); return; }
+  if(!pr){ alert('Elegí el profesional.'); return; }
+  btn.dataset.t=btn.textContent; busyBtn(btn,true);
+  api('kioskAdd',{tipo:'turno', nombre:n, profesional:pr,
+    horaTurno:document.getElementById('fHora').value, ident:document.getElementById('fIdent').value})
+  .then(function(){ busyBtn(btn,false); ok('Tu llegada fue registrada.<br>En breve te llamaremos.'); })
+  .catch(function(e){ busyBtn(btn,false); fail(e); });
+}
+function enviarUrg(btn){
+  var n=document.getElementById('uNombre').value.trim();
+  if(n.length<3){ alert('Ingresá tu nombre y apellido.'); return; }
+  btn.dataset.t=btn.textContent; busyBtn(btn,true);
+  api('kioskAdd',{tipo:'urgencia', nombre:n, telefono:document.getElementById('uTel').value})
+  .then(function(){ busyBtn(btn,false); ok('Ya avisamos al equipo.<br>Acercate a recepción.'); })
+  .catch(function(e){ busyBtn(btn,false); fail(e); });
+}
+api('kioskProfs').then(function(list){
+  document.getElementById('fProf').innerHTML='<option value="">Elegí el profesional…</option>'
+    +list.map(function(p){ return '<option>'+p+'</option>'; }).join('');
+}).catch(function(){});
+</script>
+</body>
+</html>
