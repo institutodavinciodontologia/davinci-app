@@ -813,8 +813,27 @@ function finLoad(){
         +'<span class="muted" style="font-size:'+(big?'13px':'11.5px')+';'+(big?'color:var(--text);font-weight:600':'')+'">'+esc(it.label)+'</span>'
         +'<span style="font-weight:'+(big?'600':'400')+';font-size:'+(big?'16px':'13px')+';color:'+(big?'var(--gold-l)':'var(--text)')+'">'+esc(it.value)+'</span></div>';
     });
-    box.innerHTML=h+'</div></div>';
+    h+='</div></div>';
+    h+=finDetalle('Pacientes atendidos', d.atendidos);
+    h+=finDetalle('Ingresos a tu cuenta', d.ingresos);
+    box.innerHTML=h;
   }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+function finDetalle(titulo, t){
+  if(!t || !t.rows || !t.rows.length) return '';
+  function idx(names){ for(var i=0;i<t.headers.length;i++){ var hh=t.headers[i].toLowerCase(); for(var j=0;j<names.length;j++){ if(hh.indexOf(names[j])>-1) return i; } } return -1; }
+  var iPac=idx(['paciente']), iFec=idx(['fecha']), iCon=idx(['concepto']), iImp=idx(['importe']), iMed=idx(['medio']), iCta=idx(['cuenta']);
+  var rows=t.rows.map(function(r){
+    var pac=iPac>=0?r[iPac]:'', imp=iImp>=0?r[iImp]:'';
+    var sub=[]; if(iFec>=0&&r[iFec])sub.push(r[iFec]); if(iCon>=0&&r[iCon])sub.push(r[iCon]); if(iCta>=0&&r[iCta])sub.push(r[iCta]); else if(iMed>=0&&r[iMed])sub.push(r[iMed]);
+    return '<div class="row" style="padding:7px 0;border-bottom:1px solid rgba(201,168,76,.1)">'
+      +'<div style="min-width:0"><div style="font-weight:600;font-size:13px">'+esc(pac||'—')+'</div>'
+      +'<div class="muted" style="font-size:11px">'+esc(sub.join(' · '))+'</div></div>'
+      +'<div style="font-weight:600;color:var(--gold-l);white-space:nowrap">'+esc(imp)+'</div></div>';
+  }).join('');
+  return '<div class="card" style="margin-top:14px"><div class="row" style="margin-bottom:6px">'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;color:var(--gold-l)">'+esc(titulo)+'</div>'
+    +'<span class="chip">'+t.rows.length+'</span></div>'+rows+'</div>';
 }
 function finRoleCheck(){
   api('finRole').then(function(r){
