@@ -951,7 +951,7 @@ function resenasLoad(){
     if(d.url.indexOf('PEGAR')>-1){ box.innerHTML='<div class="card"><p class="muted">Falta cargar el link de reseñas de Google. Avisale a quien administra la app.</p></div>'; return; }
     if(!d.rows.length){ box.innerHTML='<p class="muted">No hay pacientes pendientes de reseña hoy</p>'; return; }
     box.innerHTML='<p class="muted" style="margin-bottom:10px">'+d.rows.length+' pacientes de hoy</p>'+d.rows.map(function(r){
-      var msg=d.msg.replace('{n}', r.paciente.split(' ')[0]).replace('{url}', d.url);
+      var msg=d.msg.replace('{n}', r.paciente.split(' ')[0]).replace('{url}', r.url||d.url);
       var wa='https://wa.me/'+String(r.tel).replace(/\D/g,'')+'?text='+encodeURIComponent(msg);
       return '<div class="card"><div class="row"><div style="font-weight:600;font-size:14px">'+esc(r.paciente)+'</div>'
         +'<span class="muted">'+esc(r.hLlegada)+'</span></div>'
