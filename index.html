@@ -130,7 +130,8 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
     <div class="tile" onclick="go('deriv')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 7h11M11 3.5 15 7l-4 3.5M20 17H9M13 13.5 9 17l4 3.5"/></svg></div><div class="tname">Derivaciones</div><div class="tdesc">Pendientes y completadas</div></div>
     <div class="tile" onclick="go('consent')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6z"/><path d="M9 8h6M9 11.5h6M9 17c.8-1.4 2-1.4 2.6 0 .6 1.2 1.6 1.2 2.4-.5"/></svg></div><div class="tname">Consentimiento</div><div class="tdesc">Firma en el celular → PDF</div></div>
     <div class="tile" onclick="go('ateneo')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M2.5 19c.6-3 2.6-4.5 5-4.5M21.5 19c-.6-3-2.6-4.5-5-4.5M7.5 20c.5-3.5 2.4-5 4.5-5s4 1.5 4.5 5"/></svg></div><div class="tname">Ateneo</div><div class="tdesc">Casos para presentar</div></div>
-    <div class="tile" id="tile-mispac" style="display:none" onclick="go('mispac')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20c.8-4 3.5-6 7-6s6.2 2 7 6"/></svg></div><div class="tname">Mis pacientes</div><div class="tdesc">Llegadas y sala de espera</div></div>
+    <div class="tile" id="tile-mispac" style="display:none" onclick="go('mispac')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 18v2M16 18v2M8 11h.01M12 11h.01M16 11h.01"/></svg></div><div class="tname">Mi sala de espera</div><div class="tdesc">Llegadas de hoy</div></div>
+    <div class="tile" id="tile-mispro" style="display:none" onclick="go('mispro')"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20c.8-4 3.5-6 7-6s6.2 2 7 6"/></svg></div><div class="tname">Mis pacientes</div><div class="tdesc">Los que están a tu cargo</div></div>
     <div class="tile" id="tile-recep" style="display:none" onclick="go('recep')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 20V8l8.5-4.5L20.5 8v12"/><path d="M9 20v-5h6v5M3.5 12h17"/></svg></div><div class="tname">Recepción</div><div class="tdesc">Tablero de llegadas del día</div></div>
     <div class="tile" id="tile-fin" style="display:none" onclick="go('fin')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></div><div class="tname">Cierre profesional</div><div class="tdesc">Tu liquidación por mes</div></div>
     <div class="tile" id="tile-mov" style="display:none" onclick="go('mov')"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div><div class="tname">Cargar movimiento</div><div class="tdesc">Solo administración</div></div>
@@ -172,9 +173,9 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
   <div class="tabs"><button class="sel" id="kt0" onclick="kaizenTab(0)">Nuevo reporte</button><button id="kt1" onclick="kaizenTab(1)">Ver reportes</button></div>
   <div id="kForm">
     <label>Área o lugar</label>
-    <select id="kArea"><option>Consultorio 1</option><option>Consultorio 2</option><option>Consultorio 3</option><option>Recepción</option><option>Esterilización</option><option>Baño</option><option>Otro</option></select>
+    <select id="kArea"><option>Consultorio 6</option><option>Consultorio 7</option><option>Consultorio 8</option><option>Consultorio 9</option><option>Administración</option><option>Sala de espera</option><option>Ateneo</option><option>Esterilización</option><option>Otro</option></select>
     <label>Categoría</label>
-    <select id="kCat"><option>Equipamiento</option><option>Insumos</option><option>Limpieza</option><option>Infraestructura</option><option>Proceso</option><option>Otro</option></select>
+    <select id="kCat"><option>Equipamiento</option><option>Limpieza</option><option>Infraestructura</option><option>Proceso</option><option>Otro</option></select>
     <label>Descripción del problema</label>
     <textarea id="kDesc" placeholder="¿Qué pasa? ¿Desde cuándo?"></textarea>
     <label>Urgencia</label>
@@ -195,11 +196,12 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
   <h1 class="title">Derivaciones</h1>
   <p class="sub"><a id="dSheetLink" href="https://docs.google.com/spreadsheets/d/1Nn3Rg6kmSFqzzlKajYW9Qx67DE6HMqD2kccqkvuUyuY/edit?gid=447872844" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">Abrir hoja "log derivaciones" ↗</a></p>
   <div class="tabs"><button class="sel" id="dt0" onclick="derivTab('PENDIENTE')">Pendientes</button><button id="dt1" onclick="derivTab('COMPLETADA')">Completadas</button><button id="dt2" onclick="derivTab('NUEVA')">+ Nueva</button></div>
+  <div class="tabs" id="dFiltros" style="margin-top:-6px"><button class="sel" id="df0" onclick="derivFiltro('todas')">Todas</button><button id="df1" onclick="derivFiltro('parami')">Para mí</button><button id="df2" onclick="derivFiltro('mias')">Hechas por mí</button></div>
   <div id="dList"><div class="spin"></div></div>
   <div id="dForm" style="display:none">
     <label>Paciente</label><input id="dPac" placeholder="Apellido y nombre">
-    <label>Deriva (profesional)</label><input id="dDe" placeholder="¿Quién deriva?">
-    <label>Destino (profesional)</label><input id="dA" placeholder="¿A quién?">
+    <label>Deriva (profesional)</label><select id="dDe"></select>
+    <label>Destino (profesional)</label><select id="dA"></select>
     <label>Especialidad</label><input id="dEsp" placeholder="Ej: Endodoncia">
     <label>Motivo</label><textarea id="dMot" placeholder="Motivo de la derivación"></textarea>
     <label>Urgencia</label>
@@ -252,10 +254,24 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
 <!-- INSUMOS -->
 <section class="screen" id="s-insumos">
   <h1 class="title">Insumos</h1>
-  <p class="sub">Los pedidos se hacen por el formulario</p>
-  <button class="btn" style="margin-top:0" onclick="openInsumos()">Pedir insumos</button>
-  <label style="margin-top:22px">Stock del instituto</label>
-  <div id="insList"><div class="spin"></div></div>
+  <div class="tabs"><button class="sel" id="it0" onclick="insumosTab(0)">Pedir insumo</button><button id="it1" onclick="insumosTab(1)">Ver stock</button></div>
+  <div id="insForm">
+    <label>¿Qué insumo necesitás?</label>
+    <input id="inNombre" placeholder="Ej: composite A2, guantes M, anestesia">
+    <label>Cantidad</label>
+    <input id="inCant" inputmode="numeric" placeholder="1" value="1">
+    <label>Consultorio</label>
+    <select id="inCons"><option>Consultorio 6</option><option>Consultorio 7</option><option>Consultorio 8</option><option>Consultorio 9</option><option>Quirófano</option><option>Otro</option></select>
+    <label>Urgencia</label>
+    <div class="seg" id="inUrg">
+      <button onclick="segSel(this)" data-v="normal" class="sel">Normal</button>
+      <button onclick="segSel(this)" data-v="urgente">Urgente</button>
+    </div>
+    <label>Observación (opcional)</label>
+    <input id="inObs" placeholder="Marca, detalle, etc.">
+    <button class="btn" onclick="insumosPedir(this)">Enviar pedido</button>
+  </div>
+  <div id="insList" style="display:none"><div class="spin"></div></div>
 </section>
 
 <!-- CIERRE PROFESIONAL -->
@@ -305,11 +321,19 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
   <div id="recepList"><div class="spin"></div></div>
 </section>
 
-<!-- MIS PACIENTES (vista profesional) -->
+<!-- MI SALA DE ESPERA (vista profesional) -->
 <section class="screen" id="s-mispac">
-  <h1 class="title">Mis pacientes</h1>
-  <p class="sub">Sala de espera de hoy</p>
+  <h1 class="title">Mi sala de espera</h1>
+  <p class="sub">Llegadas de hoy</p>
   <div id="mispacList"><div class="spin"></div></div>
+</section>
+
+<!-- MIS PACIENTES (responsable en seguimiento) -->
+<section class="screen" id="s-mispro">
+  <h1 class="title">Mis pacientes</h1>
+  <p class="sub">Pacientes a tu cargo en la ficha de seguimiento</p>
+  <input id="misproQ" placeholder="Filtrar por nombre" oninput="misproRender()" autocomplete="off">
+  <div id="misproList" style="margin-top:14px"><div class="spin"></div></div>
 </section>
 
 <!-- ATENEO -->
@@ -417,6 +441,7 @@ function go(s){
   if(s==='insumos') insumosLoad();
   if(s==='recep') recepLoad();
   if(s==='mispac') mispacLoad();
+  if(s==='mispro') misproLoad();
   if(s==='notif') notifLoad();
 }
 document.getElementById('s-home').classList.add('on');
@@ -439,8 +464,10 @@ function doSearch(){
   api('buscar',{q:q}).then(function(list){
     if(!list.length){ box.innerHTML='<p class="muted">Sin resultados para "'+esc(q)+'"</p>'; return; }
     box.innerHTML=list.map(function(p){
-      return '<div class="card row" onclick="openPatient(\''+p.id+'\')" style="cursor:pointer">'
-        +'<div style="font-size:14.5px;font-weight:600">'+esc(p.name)+'</div>'
+      var action = p.id ? 'openPatient(\''+p.id+'\')' : (p.carpeta ? 'window.open(\''+esc(p.carpeta)+'\',\'_blank\')' : 'toast(\'Este paciente no tiene carpeta cargada en la ficha\')');
+      return '<div class="card row" onclick="'+action+'" style="cursor:pointer">'
+        +'<div><div style="font-size:14.5px;font-weight:600">'+esc(p.name)+'</div>'
+        +(p.dni?'<div class="muted" style="margin-top:2px">DNI '+esc(p.dni)+'</div>':'')+'</div>'
         +'<span style="color:var(--gold)">›</span></div>';
     }).join('');
   }).catch(function(e){ box.innerHTML=''; toast(e.message); });
@@ -578,30 +605,50 @@ function kaizenNext(row, cur){
 }
 
 // ---------- DERIVACIONES ----------
-var derivCache=null;
+var derivCache=null, derivMode='PENDIENTE', derivF='todas';
+function derivFiltro(f){
+  derivF=f;
+  ['df0','df1','df2'].forEach(function(id){document.getElementById(id).classList.remove('sel');});
+  document.getElementById(f==='todas'?'df0':f==='parami'?'df1':'df2').classList.add('sel');
+  derivRender();
+}
+function derivRender(){
+  var box=document.getElementById('dList');
+  if(!derivCache){ box.innerHTML='<div class="spin"></div>'; return; }
+  var f=derivCache.filter(function(r){
+    if(derivMode==='PENDIENTE' ? /complet/i.test(r.estado) : !/complet/i.test(r.estado)) return false;
+    if(derivF==='parami' && !r.paraMi) return false;
+    if(derivF==='mias' && !r.mia) return false;
+    return true;
+  });
+  if(!f.length){ box.innerHTML='<p class="muted">Nada por acá</p>'; return; }
+  box.innerHTML=f.map(function(r){
+    return '<div class="card"'+(r.paraMi&&derivMode==='PENDIENTE'?' style="border-color:var(--gold)"':'')+'><div class="row"><div style="font-weight:600;font-size:14px">'+esc(r.paciente)+(r.paraMi?' <span class="chip warn">Para mí</span>':'')+'</div>'
+      +'<span class="chip'+(/urg/i.test(r.urgencia)?' bad':'')+'">'+esc(r.urgencia||'—')+'</span></div>'
+      +'<div class="muted" style="margin-top:6px">'+esc(r.de)+' → '+esc(r.a)+(r.esp?' · '+esc(r.esp):'')+'</div>'
+      +(r.desc?'<div style="font-size:13px;margin-top:5px">'+esc(r.desc)+'</div>':'')
+      +'<div class="row" style="margin-top:9px"><span class="muted">'+esc(r.fecha)+'</span>'
+      +(derivMode==='PENDIENTE'?'<button class="chip ok" style="border:none;cursor:pointer" onclick="derivOk('+r.row+')">✓ Completar</button>':'')
+      +'</div></div>';
+  }).join('');
+}
 function derivTab(mode){
+  derivMode = mode==='NUEVA' ? derivMode : mode;
   ['dt0','dt1','dt2'].forEach(function(id){document.getElementById(id).classList.remove('sel');});
   document.getElementById(mode==='PENDIENTE'?'dt0':mode==='COMPLETADA'?'dt1':'dt2').classList.add('sel');
   document.getElementById('dForm').style.display=mode==='NUEVA'?'block':'none';
   document.getElementById('dList').style.display=mode==='NUEVA'?'none':'block';
-  if(mode==='NUEVA') return;
-  var box=document.getElementById('dList');
-  box.innerHTML='<div class="spin"></div>';
-  var render=function(rows){
-    var f=rows.filter(function(r){ return mode==='PENDIENTE' ? !/complet/i.test(r.estado) : /complet/i.test(r.estado); });
-    if(!f.length){ box.innerHTML='<p class="muted">Nada por acá</p>'; return; }
-    box.innerHTML=f.map(function(r){
-      return '<div class="card"><div class="row"><div style="font-weight:600;font-size:14px">'+esc(r.paciente)+'</div>'
-        +'<span class="chip'+(/urg/i.test(r.urgencia)?' bad':'')+'">'+esc(r.urgencia||'—')+'</span></div>'
-        +'<div class="muted" style="margin-top:6px">'+esc(r.de)+' → '+esc(r.a)+(r.esp?' · '+esc(r.esp):'')+'</div>'
-        +(r.desc?'<div style="font-size:13px;margin-top:5px">'+esc(r.desc)+'</div>':'')
-        +'<div class="row" style="margin-top:9px"><span class="muted">'+esc(r.fecha)+'</span>'
-        +(mode==='PENDIENTE'?'<button class="chip ok" style="border:none;cursor:pointer" onclick="derivOk('+r.row+')">✓ Completar</button>':'')
-        +'</div></div>';
-    }).join('');
-  };
-  if(derivCache){ render(derivCache); }
-  api('derivList').then(function(d){ derivCache=d.rows; render(d.rows); }).catch(function(e){ box.innerHTML=''; toast(e.message); });
+  document.getElementById('dFiltros').style.display=mode==='NUEVA'?'none':'flex';
+  api('derivList').then(function(d){
+    derivCache=d.rows;
+    var sDe=document.getElementById('dDe'), sA=document.getElementById('dA');
+    if(sDe && !sDe.options.length && d.profs){
+      var opts=d.profs.map(function(p){return '<option>'+esc(p)+'</option>';}).join('');
+      sDe.innerHTML=opts; sA.innerHTML=opts;
+    }
+    if(mode!=='NUEVA') derivRender();
+  }).catch(function(e){ if(mode!=='NUEVA'){ document.getElementById('dList').innerHTML=''; } toast(e.message); });
+  if(mode!=='NUEVA' && derivCache) derivRender();
 }
 function derivOk(row){
   api('derivDone',{row:row}).then(function(){ derivCache=null; toast('Derivación completada ✓'); derivTab('PENDIENTE'); }).catch(function(e){toast(e.message);});
@@ -689,7 +736,26 @@ function consentSend(btn){
 }
 
 // ---------- INSUMOS ----------
-function insumosLoad(){
+function insumosTab(i){
+  document.getElementById('it0').classList.toggle('sel',i===0);
+  document.getElementById('it1').classList.toggle('sel',i===1);
+  document.getElementById('insForm').style.display=i===0?'block':'none';
+  document.getElementById('insList').style.display=i===1?'block':'none';
+  if(i===1) insumosStockLoad();
+}
+function insumosPedir(btn){
+  var n=document.getElementById('inNombre').value.trim();
+  if(n.length<2){ toast('Indicá qué insumo necesitás'); return; }
+  busy(btn,true);
+  api('insumosPedido',{insumo:n, cantidad:document.getElementById('inCant').value,
+    consultorio:document.getElementById('inCons').value, urgencia:segVal('inUrg'),
+    obs:document.getElementById('inObs').value.trim()})
+  .then(function(){ busy(btn,false); toast('Pedido enviado a Hernán ✓');
+    document.getElementById('inNombre').value=''; document.getElementById('inObs').value=''; document.getElementById('inCant').value='1';
+  }).catch(function(e){ busy(btn,false); toast(e.message); });
+}
+function insumosLoad(){ insumosTab(0); }
+function insumosStockLoad(){
   var box=document.getElementById('insList');
   box.innerHTML='<div class="spin"></div>';
   api('insumosStock').then(function(list){
@@ -783,7 +849,8 @@ function notifTick(){
   api('notifPoll').then(function(d){
     if(d.tablero) document.getElementById('tile-recep').style.display='flex';
     if(d.prof) document.getElementById('tile-mispac').style.display='flex';
-    if(d.prof || d.tablero || d.avisos.length) document.getElementById('bell').style.display='block';
+    if(d.misPac) document.getElementById('tile-mispro').style.display='flex';
+    if(d.prof || d.tablero || d.misPac || d.avisos.length) document.getElementById('bell').style.display='block';
     var b=document.getElementById('bellBadge');
     b.style.display = d.count>0 ? 'block':'none';
     b.textContent = d.count;
@@ -816,6 +883,16 @@ function notifLoad(){
     b.style.display=d.count>0?'block':'none'; b.textContent=d.count;
     if(!d.avisos.length){ box.innerHTML='<p class="muted">Sin avisos por ahora</p>'; return; }
     box.innerHTML=d.avisos.map(function(a){
+      if(a.tipo==='deriv'){
+        return '<div class="card" style="border-color:'+(a.visto?'var(--dim)':'var(--warn)')+'">'
+          +'<div style="font-weight:600;font-size:14px;color:'+(a.visto?'var(--text)':'var(--warn)')+'">'+(a.visto?'':'📨 ')+'Te derivaron: '+esc(a.paciente)+'</div>'
+          +'<div class="muted" style="margin-top:3px">De '+esc(a.prof||'—')+' · '+esc(a.hLlegada||'')+(a.urgencia?' · '+esc(a.urgencia):'')+'</div>'
+          +(a.desc?'<div style="font-size:13px;margin-top:4px">'+esc(a.desc)+'</div>':'')
+          +'<div class="row" style="margin-top:8px"><span></span><span style="display:flex;gap:6px">'
+          +(!a.visto?'<button class="chip" style="border:none;cursor:pointer" onclick="notifVisto(\''+a.id+'\')">✓ Visto</button>':'')
+          +'<button class="chip warn" style="border:none;cursor:pointer" onclick="notifVisto(\''+a.id+'\');go(\'deriv\')">Ver derivaciones</button>'
+          +'</span></div></div>';
+      }
       return '<div class="card" style="border-color:'+(a.visto?'var(--dim)':'var(--gold)')+'">'
         +'<div style="font-weight:600;font-size:14px;color:'+(a.visto?'var(--text)':'var(--gold-l)')+'">'+(a.visto?'':'🔔 ')+'Llegó '+esc(a.paciente)+'</div>'
         +'<div class="muted" style="margin-top:3px">'+(a.hTurno?'Paciente de las '+esc(a.hTurno)+' · ':'')+esc(a.estado)+' · Llegó '+esc(a.hLlegada)+(a.espera!==''?' · Espera '+esc(a.espera)+' min':'')+'</div>'
@@ -925,6 +1002,33 @@ function mispacLoad(silent){
     }).join('');
   }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
 }
+// --- Mis pacientes (responsable en seguimiento) ---
+var misproCache=null;
+function misproLoad(){
+  var box=document.getElementById('misproList');
+  box.innerHTML='<div class="spin"></div>';
+  api('misPacientes').then(function(list){ misproCache=list; misproRender(); })
+  .catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+function misproRender(){
+  var box=document.getElementById('misproList');
+  if(!misproCache) return;
+  var q=_normJs(document.getElementById('misproQ').value);
+  var f=misproCache.filter(function(p){ return !q || _normJs(p.nombre).indexOf(q)>-1; });
+  if(!f.length){ box.innerHTML='<p class="muted">Sin pacientes</p>'; return; }
+  box.innerHTML='<p class="muted" style="margin-bottom:10px">'+f.length+' pacientes</p>'+f.map(function(p){
+    return '<div class="card" onclick="segOpen('+p.row+')" style="cursor:pointer">'
+      +'<div class="row"><div style="font-weight:600;font-size:14px"><span class="dot" style="background:'+semColor(p.semaforo)+'"></span>'+esc(p.nombre)+'</div>'
+      +'<span class="chip">'+esc(p.kanban||'—')+'</span></div>'
+      +'<div class="muted" style="margin-top:5px">Últ. atención: '+esc(p.ultAt||'—')+(p.proxPaso?' · Próximo: '+esc(p.proxPaso):'')+'</div>'
+      +'<div style="display:flex;gap:6px;margin-top:8px" onclick="event.stopPropagation()">'
+      +(p.carpeta?'<a class="chip" style="text-decoration:none" href="'+esc(p.carpeta)+'" target="_blank">📁 Carpeta ↗</a>':'')
+      +(p.tel?'<a class="wa" href="https://wa.me/'+String(p.tel).replace(/\D/g,'')+'" target="_blank">WhatsApp</a>':'')
+      +'</div></div>';
+  }).join('');
+}
+function _normJs(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+
 function pacAccion(id, estado){
   api('recepEstado',{id:id,estado:estado}).then(function(){
     api('notifSeen',{id:id}).catch(function(){});
