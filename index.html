@@ -421,6 +421,7 @@ function startApp(){
   document.getElementById('udate').textContent = dias[d.getDay()]+' '+d.getDate()+' de '+meses[d.getMonth()]+' · ¿Qué necesitás hoy?';
   finRoleCheck();
   notifStart();
+  try{ if('Notification' in window && Notification.permission==='default') Notification.requestPermission(); }catch(e){}
 }
 function logout(){ if(confirm('¿Cerrar sesión?')){ localStorage.removeItem('dvtk'); localStorage.removeItem('dvusr'); sessionStorage.clear(); location.reload(); } }
 
@@ -833,12 +834,27 @@ var notifTimer=null, notifLast=-1, recepData=null;
 function beep(){
   try{
     var ctx=new (window.AudioContext||window.webkitAudioContext)();
-    var o=ctx.createOscillator(), g=ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.frequency.value=880; g.gain.value=0.15;
-    o.start(); o.stop(ctx.currentTime+0.25);
+    // doble "ding-dong" campanita, más fuerte y notorio
+    function tone(f,t0,dur){
+      var o=ctx.createOscillator(), g=ctx.createGain();
+      o.type='sine'; o.frequency.value=f;
+      o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime+t0);
+      g.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+t0+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+t0+dur);
+      o.start(ctx.currentTime+t0); o.stop(ctx.currentTime+t0+dur);
+    }
+    tone(988,0,0.35); tone(1319,0.18,0.5);   // Si → Mi
+    tone(988,0.75,0.35); tone(1319,0.93,0.55);
   }catch(e){}
-  if(navigator.vibrate) navigator.vibrate([180,80,180]);
+  if(navigator.vibrate) navigator.vibrate([250,120,250,120,250]);
+}
+function setBadge(n){
+  try{
+    if('setAppBadge' in navigator){
+      if(n>0) navigator.setAppBadge(n); else navigator.clearAppBadge();
+    }
+  }catch(e){}
 }
 function notifStart(){
   if(notifTimer) return;
@@ -857,6 +873,7 @@ function notifTick(){
     b.textContent = d.count;
     if(notifLast>=0 && d.count>notifLast){ beep(); toast('🔔 Llegó un paciente'); }
     notifLast=d.count;
+    setBadge(d.count);
     if(document.getElementById('s-recep').classList.contains('on')) recepLoad(true);
     if(document.getElementById('s-mispac').classList.contains('on')) mispacLoad(true);
   }).catch(function(){});
@@ -880,6 +897,7 @@ function notifLoad(){
   box.innerHTML='<div class="spin"></div>';
   api('notifPoll').then(function(d){
     notifLast=d.count;
+    setBadge(d.count);
     var b=document.getElementById('bellBadge');
     b.style.display=d.count>0?'block':'none'; b.textContent=d.count;
     if(!d.avisos.length){ box.innerHTML='<p class="muted">Sin avisos por ahora</p>'; return; }
