@@ -1,4 +1,4 @@
-var CACHE = 'davinci-v1';
+var CACHE = 'davinci-v2';
 var ASSETS = ['./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install', function(e){
@@ -13,6 +13,7 @@ self.addEventListener('fetch', function(e){
   if(e.request.method!=='GET') return;
   var url = new URL(e.request.url);
   if(url.origin !== location.origin) return;
+  // index.html y la raíz: siempre red primero (nunca servir versión vieja del login)
   e.respondWith(
     fetch(e.request).then(function(r){
       var copy = r.clone();
