@@ -310,6 +310,8 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
 <!-- TABLERO RECEPCIÓN -->
 <section class="screen" id="s-recep">
   <div class="row"><h1 class="title">Recepción</h1><button class="chip" style="border:none;cursor:pointer" onclick="recepLoad()">↻ Actualizar</button></div>
+  <div class="tabs"><button class="sel" id="rc0" onclick="recepView(0)">Llegadas</button><button id="rc1" onclick="recepView(1)">Reseñas del día</button></div>
+  <div id="recepMain">
   <p class="sub" id="recepSub">Llegadas de hoy · se actualiza solo cada 30 s</p>
   <button class="btn ghost" style="margin:0 0 14px;padding:11px" onclick="recepToggleForm()">＋ Agregar llegada manual</button>
   <div id="recepForm" style="display:none" class="card">
@@ -319,6 +321,11 @@ label{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px;font-wei
     <button class="btn" onclick="recepAddSend(this)">Registrar llegada</button>
   </div>
   <div id="recepList"><div class="spin"></div></div>
+  </div>
+  <div id="resenasWrap" style="display:none">
+    <p class="sub">Pacientes de hoy · tocá WhatsApp para pedir la reseña</p>
+    <div id="resenasList"><div class="spin"></div></div>
+  </div>
 </section>
 
 <!-- MI SALA DE ESPERA (vista profesional) -->
@@ -929,6 +936,35 @@ function notifVisto(id){ api('notifSeen',{id:id}).then(function(){ notifLoad(); 
 function recepToggleForm(){
   var f=document.getElementById('recepForm');
   f.style.display=f.style.display==='none'?'block':'none';
+}
+function recepView(i){
+  document.getElementById('rc0').classList.toggle('sel',i===0);
+  document.getElementById('rc1').classList.toggle('sel',i===1);
+  document.getElementById('recepMain').style.display=i===0?'block':'none';
+  document.getElementById('resenasWrap').style.display=i===1?'block':'none';
+  if(i===1) resenasLoad();
+}
+function resenasLoad(){
+  var box=document.getElementById('resenasList');
+  box.innerHTML='<div class="spin"></div>';
+  api('resenasList').then(function(d){
+    if(d.url.indexOf('PEGAR')>-1){ box.innerHTML='<div class="card"><p class="muted">Falta cargar el link de reseñas de Google. Avisale a quien administra la app.</p></div>'; return; }
+    if(!d.rows.length){ box.innerHTML='<p class="muted">No hay pacientes pendientes de reseña hoy</p>'; return; }
+    box.innerHTML='<p class="muted" style="margin-bottom:10px">'+d.rows.length+' pacientes de hoy</p>'+d.rows.map(function(r){
+      var msg=d.msg.replace('{n}', r.paciente.split(' ')[0]).replace('{url}', d.url);
+      var wa='https://wa.me/'+String(r.tel).replace(/\D/g,'')+'?text='+encodeURIComponent(msg);
+      return '<div class="card"><div class="row"><div style="font-weight:600;font-size:14px">'+esc(r.paciente)+'</div>'
+        +'<span class="muted">'+esc(r.hLlegada)+'</span></div>'
+        +'<div class="muted" style="margin-top:3px">'+esc(r.prof||'—')+'</div>'
+        +'<div style="display:flex;gap:8px;margin-top:9px">'
+        +'<a class="wa" style="flex:1;justify-content:center;padding:9px" href="'+wa+'" target="_blank" onclick="resenaOk(\''+r.id+'\')">Enviar reseña por WhatsApp</a>'
+        +'<button class="chip" style="border:none;cursor:pointer" onclick="resenaOk(\''+r.id+'\')">✓ Ya envié</button>'
+        +'</div></div>';
+    }).join('');
+  }).catch(function(e){ box.innerHTML='<div class="card"><p class="muted">'+esc(e.message)+'</p></div>'; });
+}
+function resenaOk(id){
+  api('resenaSent',{id:id}).then(function(){ setTimeout(resenasLoad, 400); }).catch(function(e){toast(e.message);});
 }
 function recepLoad(silent){
   var box=document.getElementById('recepList');
